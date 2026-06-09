@@ -2858,7 +2858,7 @@ function ComingSoon({page}) {
 // ─── EMAIL SIGNUP MODAL ───────────────────────────────────────────────────────
 
 // 👉 Free setup: go to formspree.io → New Form → copy your form ID and paste it below
-const FORMSPREE_ID = "xyzabcde"; // ← replace with your real Formspree form ID
+const FORMSPREE_ID = "mojzwrwa"; // ← replace with your real Formspree form ID
 
 const ALL_TEAMS_FLAT = GROUPS.flatMap(g => g.teams.map(t => ({...t, groupId:g.id})));
 
