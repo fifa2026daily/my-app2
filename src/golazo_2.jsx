@@ -162,36 +162,74 @@ function HeatBar({v,color="#D4AF37"}) {
 }
 
 function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
+  const [mobileOpen,setMobileOpen]=useState(false);
+  const navStyle={
+    position:"sticky",top:0,zIndex:100,
+    display:"flex",alignItems:"center",justifyContent:"space-between",
+    padding:"0 16px",height:"60px",
+    background: scrolled||activeNav!=="Home" ? "rgba(6,10,16,0.95)" : "rgba(6,10,16,0.85)",
+    backdropFilter:"blur(16px)",
+    borderBottom:"1px solid rgba(212,175,55,0.12)",
+    transition:"all 0.3s",
+  };
   return (
-    <nav style={{
-      position:"sticky",top:0,zIndex:100,
-      display:"flex",alignItems:"center",justifyContent:"space-between",
-      padding:"0 28px",height:"60px",
-      background: scrolled||activeNav!=="Home" ? "rgba(6,10,16,0.95)" : "transparent",
-      backdropFilter: scrolled||activeNav!=="Home" ? "blur(16px)" : "none",
-      borderBottom: scrolled||activeNav!=="Home" ? "1px solid rgba(212,175,55,0.12)" : "none",
-      transition:"all 0.3s",
-    }}>
-      <div style={{display:"flex",alignItems:"center",gap:"9px"}}>
-        <div style={{width:"32px",height:"32px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px",animation:"glow 3s infinite"}}>⚽</div>
-        <div>
-          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.25rem",color:"#D4AF37",letterSpacing:"0.08em",lineHeight:1}}>GOLAZO</div>
-          <div style={{fontSize:"0.5rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.2em",textTransform:"uppercase"}}>The FIFA 2026 Fan World</div>
+    <>
+      <nav style={navStyle}>
+        {/* LOGO */}
+        <div style={{display:"flex",alignItems:"center",gap:"9px",flexShrink:0}}>
+          <div style={{width:"32px",height:"32px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px",animation:"glow 3s infinite"}}>⚽</div>
+          <div>
+            <div className="logo-name" style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.25rem",color:"#D4AF37",letterSpacing:"0.08em",lineHeight:1}}>GOLAZO</div>
+            <div className="logo-sub" style={{fontSize:"0.5rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.2em",textTransform:"uppercase"}}>The FIFA 2026 Fan World</div>
+          </div>
         </div>
-      </div>
-      <div className="nav-links" style={{display:"flex",gap:"2px"}}>
-        {NAV.map(n=>(
-          <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
-            background:"none",border:"none",cursor:"pointer",padding:"6px 10px",borderRadius:"6px",
-            fontSize:"0.75rem",fontWeight:500,fontFamily:"'DM Sans',sans-serif",
-            color:activeNav===n?"#D4AF37":"rgba(255,255,255,0.45)",
-            borderBottom:activeNav===n?"2px solid #D4AF37":"2px solid transparent",
-            transition:"all 0.2s",
-          }}>{n}</button>
-        ))}
-      </div>
-      <button className="join-btn" onClick={onJoin} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"8px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Join the Fan World</button>
-    </nav>
+
+        {/* DESKTOP NAV */}
+        <div className="nav-links" style={{display:"flex",gap:"2px"}}>
+          {NAV.map(n=>(
+            <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
+              background:"none",border:"none",cursor:"pointer",padding:"6px 10px",borderRadius:"6px",
+              fontSize:"0.75rem",fontWeight:500,fontFamily:"'DM Sans',sans-serif",
+              color:activeNav===n?"#D4AF37":"rgba(255,255,255,0.45)",
+              borderBottom:activeNav===n?"2px solid #D4AF37":"2px solid transparent",
+              transition:"all 0.2s",
+            }}>{n}</button>
+          ))}
+        </div>
+
+        {/* RIGHT ACTIONS */}
+        <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
+          <button className="join-btn desktop-only" onClick={onJoin} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"8px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Join the Fan World</button>
+          {/* Mobile join */}
+          <button className="mobile-join-btn" onClick={onJoin} style={{display:"none",background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"7px 12px",fontWeight:700,fontSize:"0.72rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",whiteSpace:"nowrap"}}>Join ⚽</button>
+          {/* Hamburger */}
+          <button className="hamburger-btn" onClick={()=>setMobileOpen(v=>!v)} style={{display:"none",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"7px 10px",color:"#D4AF37",cursor:"pointer",fontSize:"1rem",lineHeight:1}}>
+            {mobileOpen?"✕":"☰"}
+          </button>
+        </div>
+      </nav>
+
+      {/* MOBILE DROPDOWN MENU */}
+      {mobileOpen&&(
+        <div style={{position:"fixed",top:"60px",left:0,right:0,zIndex:99,background:"rgba(6,10,16,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(212,175,55,0.15)",padding:"8px 0 16px",animation:"fadeUp 0.2s ease both"}}>
+          {NAV.map(n=>(
+            <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
+              display:"block",width:"100%",background:"none",border:"none",
+              padding:"14px 24px",textAlign:"left",cursor:"pointer",
+              fontFamily:"'DM Sans',sans-serif",fontSize:"1rem",fontWeight:500,
+              color:activeNav===n?"#D4AF37":"rgba(255,255,255,0.65)",
+              borderLeft:activeNav===n?"3px solid #D4AF37":"3px solid transparent",
+              transition:"all 0.15s",
+            }}>{n}</button>
+          ))}
+          <div style={{margin:"8px 24px 0",paddingTop:"12px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+            <button onClick={()=>{onJoin();setMobileOpen(false);}} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"12px 24px",fontWeight:700,fontSize:"0.9rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",width:"100%"}}>
+              🔥 Join The Fan World
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -470,6 +508,11 @@ function HomePage({setActiveNav}) {
             <button onClick={()=>setActiveNav("Groups")} style={{background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.65)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",padding:"13px 24px",fontWeight:500,fontSize:"0.88rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
               📋 View All Groups
             </button>
+          </div>
+
+          {/* Mobile trophy */}
+          <div className="mobile-trophy-show" style={{display:"none",textAlign:"center",margin:"16px 0 4px"}}>
+            <img src="/fifa_trophy.png" alt="FIFA Trophy" style={{width:"120px",filter:"drop-shadow(0 0 30px rgba(212,175,55,0.5))",animation:"float-trophy 4s ease-in-out infinite"}} onError={e=>e.target.style.display="none"}/>
           </div>
 
           {/* Opening match badge */}
@@ -3106,20 +3149,22 @@ export default function Golazo() {
         .predict-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
         .join-btn:hover{background:#E8C44A!important;transform:translateY(-2px);}
         @media(max-width:768px){
-          .nav-links{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:calc(100vw - 180px);}
-          .nav-links::-webkit-scrollbar{display:none;}
-          .nav-links button{white-space:nowrap;}
-          .join-btn{padding:6px 10px!important;font-size:0.68rem!important;}
+          .nav-links{display:none!important;}
+          .desktop-only{display:none!important;}
+          .hamburger-btn{display:flex!important;}
+          .mobile-join-btn{display:flex!important;}
+          .logo-sub{display:none!important;}
+          .logo-name{font-size:1.15rem!important;}
           .hero-grid{grid-template-columns:1fr!important;min-height:auto!important;padding:32px 20px 24px!important;gap:20px!important;}
           .hero-trophy-col{display:none!important;}
+          .mobile-trophy-show{display:block!important;}
           .hero-text{text-align:center;}
-          .hero-text h1{font-size:clamp(3.5rem,18vw,6rem)!important;}
+          .hero-text h1{font-size:clamp(3.2rem,16vw,5.5rem)!important;}
           .hero-text p{margin:0 auto 24px!important;}
           .hero-countdown{justify-content:center!important;}
-          .hero-btns{justify-content:center!important;}
-          .hero-opening{justify-content:center!important;}
+          .hero-btns{justify-content:center!important;flex-direction:column!important;}
+          .hero-btns button{width:100%!important;justify-content:center!important;}
           .hero-badge{justify-content:center!important;}
-          .logo-sub{display:none;}
         }
 
       `}</style>
