@@ -179,7 +179,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
           <div style={{fontSize:"0.5rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.2em",textTransform:"uppercase"}}>The FIFA 2026 Fan World</div>
         </div>
       </div>
-      <div style={{display:"flex",gap:"2px"}}>
+      <div className="nav-links" style={{display:"flex",gap:"2px"}}>
         {NAV.map(n=>(
           <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
             background:"none",border:"none",cursor:"pointer",padding:"6px 10px",borderRadius:"6px",
@@ -202,7 +202,7 @@ function Footer() {
         <div style={{width:"26px",height:"26px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"6px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px"}}>⚽</div>
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"0.9rem",color:"#D4AF37",letterSpacing:"0.08em"}}>GOLAZO</div>
       </div>
-      <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game · <a href="/privacy.html" style={{color:"rgba(255,255,255,0.35)"}}>Privacy Policy</a></div>
+      <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game</div>
       <div style={{display:"flex",gap:"16px"}}>
         {["Twitter/X","Discord","Instagram"].map(s=><span key={s} style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.25)",cursor:"pointer"}}>{s}</span>)}
       </div>
@@ -415,7 +415,7 @@ function Countdown() {
     tick();const id=setInterval(tick,1000);return()=>clearInterval(id);
   },[]);
   return (
-    <div style={{display:"flex",gap:"8px",justifyContent:"flex-start",flexWrap:"wrap"}}>
+    <div className="hero-countdown" style={{display:"flex",gap:"8px",justifyContent:"flex-start",flexWrap:"wrap"}}>
       {[["DAYS",t.d],["HRS",t.h],["MIN",t.m],["SEC",t.s]].map(([l,v])=>(
         <div key={l} style={{textAlign:"center",minWidth:"64px"}}>
           <div style={{background:"rgba(0,0,0,0.4)",border:"1px solid rgba(212,175,55,0.3)",borderRadius:"10px",padding:"12px 8px",fontFamily:"'Bebas Neue',cursive",fontSize:"2.4rem",color:"#D4AF37",lineHeight:1,boxShadow:"0 0 20px rgba(212,175,55,0.15)"}}>{String(v).padStart(2,"0")}</div>
@@ -439,7 +439,7 @@ function HomePage({setActiveNav}) {
   return (
     <>
       {/* ── HERO — split layout with trophy ── */}
-      <section style={{minHeight:"95vh",display:"grid",gridTemplateColumns:"1fr 1fr",alignItems:"center",padding:"0 5vw",position:"relative",overflow:"hidden",gap:"40px"}}>
+      <section className="hero-grid" style={{minHeight:"95vh",display:"grid",gridTemplateColumns:"1fr 1fr",alignItems:"center",padding:"0 5vw",position:"relative",overflow:"hidden",gap:"40px"}}>
         {/* grid bg */}
         <div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(212,175,55,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,0.025) 1px,transparent 1px)",backgroundSize:"56px 56px"}}/>
         {/* glow blobs */}
@@ -447,8 +447,8 @@ function HomePage({setActiveNav}) {
         <div style={{position:"absolute",bottom:"0",right:"0",width:"600px",height:"600px",background:"radial-gradient(circle,rgba(255,107,53,0.06) 0%,transparent 65%)",pointerEvents:"none"}}/>
 
         {/* LEFT — text */}
-        <div style={{position:"relative",zIndex:1,animation:"fadeUp 0.8s ease forwards"}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em"}}>
+        <div className="hero-text" style={{position:"relative",zIndex:1,animation:"fadeUp 0.8s ease forwards"}}>
+          <div className="hero-badge" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em",flexWrap:"wrap"}}>
             <div style={{width:"7px",height:"7px",background:"#D4AF37",borderRadius:"50%",animation:"pulse 1.4s infinite"}}/>
             SQUADS LOCKED · 48 TEAMS · KICKOFF IN 6 DAYS
           </div>
@@ -463,7 +463,7 @@ function HomePage({setActiveNav}) {
 
           <Countdown/>
 
-          <div style={{display:"flex",gap:"10px",flexWrap:"wrap",marginTop:"28px"}}>
+          <div className="hero-btns" style={{display:"flex",gap:"10px",flexWrap:"wrap",marginTop:"28px"}}>
             <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 24px",fontWeight:700,fontSize:"0.88rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
               🔮 Lock In Your Prediction
             </button>
@@ -484,7 +484,7 @@ function HomePage({setActiveNav}) {
         </div>
 
         {/* RIGHT — Trophy */}
-        <div style={{position:"relative",zIndex:1,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeUp 1s ease 0.2s both"}}>
+        <div className="hero-trophy-col" style={{position:"relative",zIndex:1,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeUp 1s ease 0.2s both"}}>
           {/* radial glow behind trophy */}
           <div style={{position:"absolute",width:"420px",height:"420px",borderRadius:"50%",background:"radial-gradient(circle,rgba(212,175,55,0.18) 0%,rgba(255,107,53,0.08) 45%,transparent 70%)",animation:"glow 4s ease-in-out infinite"}}/>
           {/* gold ring */}
@@ -2858,7 +2858,7 @@ function ComingSoon({page}) {
 // ─── EMAIL SIGNUP MODAL ───────────────────────────────────────────────────────
 
 // 👉 Free setup: go to formspree.io → New Form → copy your form ID and paste it below
-const FORMSPREE_ID = "mojzwrwa"; // ← replace with your real Formspree form ID
+const FORMSPREE_ID = "xyzabcde"; // ← replace with your real Formspree form ID
 
 const ALL_TEAMS_FLAT = GROUPS.flatMap(g => g.teams.map(t => ({...t, groupId:g.id})));
 
@@ -3105,6 +3105,23 @@ export default function Golazo() {
         .fav-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.4)!important;}
         .predict-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
         .join-btn:hover{background:#E8C44A!important;transform:translateY(-2px);}
+        @media(max-width:768px){
+          .nav-links{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:calc(100vw - 180px);}
+          .nav-links::-webkit-scrollbar{display:none;}
+          .nav-links button{white-space:nowrap;}
+          .join-btn{padding:6px 10px!important;font-size:0.68rem!important;}
+          .hero-grid{grid-template-columns:1fr!important;min-height:auto!important;padding:32px 20px 24px!important;gap:20px!important;}
+          .hero-trophy-col{display:none!important;}
+          .hero-text{text-align:center;}
+          .hero-text h1{font-size:clamp(3.5rem,18vw,6rem)!important;}
+          .hero-text p{margin:0 auto 24px!important;}
+          .hero-countdown{justify-content:center!important;}
+          .hero-btns{justify-content:center!important;}
+          .hero-opening{justify-content:center!important;}
+          .hero-badge{justify-content:center!important;}
+          .logo-sub{display:none;}
+        }
+
       `}</style>
       <EmailModal open={showEmail} onClose={()=>setShowEmail(false)}/>
       <NavBar activeNav={activeNav} setActiveNav={setActiveNav} scrolled={scrolled} onJoin={()=>setShowEmail(true)}/>
