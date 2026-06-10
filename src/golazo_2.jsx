@@ -202,7 +202,7 @@ function Footer() {
         <div style={{width:"26px",height:"26px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"6px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px"}}>⚽</div>
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"0.9rem",color:"#D4AF37",letterSpacing:"0.08em"}}>GOLAZO</div>
       </div>
-      <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game</div>
+      <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game · <a href="/privacy.html" style={{color:"rgba(255,255,255,0.35)"}}>Privacy Policy</a></div>
       <div style={{display:"flex",gap:"16px"}}>
         {["Twitter/X","Discord","Instagram"].map(s=><span key={s} style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.25)",cursor:"pointer"}}>{s}</span>)}
       </div>
