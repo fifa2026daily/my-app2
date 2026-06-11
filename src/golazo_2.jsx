@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useWorldCupData } from "./useWorldCupData";
+import { savePrediction, getPredictionCounts, getMyPrediction, submitVote, getVoteCounts, getMyVote } from "./supabase";
 // Trophy image — place fifa_trophy.png inside C:\Users\HP\my-app\public\
 const TROPHY_IMG = "/fifa_trophy.png";
 
@@ -1416,25 +1417,38 @@ function PredictionsPage() {
   const [locked,     setLocked]     = useState(false);
   const [showAll,    setShowAll]    = useState(false);
   const [submitted,  setSubmitted]  = useState(false);
+  const [predCounts, setPredCounts] = useState({});
+  const [totalPreds, setTotalPreds] = useState(0);
 
-  // persist to localStorage
+  // Load from Supabase on mount
   useEffect(()=>{
-    try {
-      const s = localStorage.getItem("golazo_preds");
-      if(s){ const p=JSON.parse(s); setChampion(p.champion||null); setGoldenBoot(p.goldenBoot||null); setGroupPicks(p.groupPicks||{}); setFinalist(p.finalist||null); setLocked(p.locked||false); setSubmitted(p.submitted||false); }
-    } catch(e){}
+    getMyPrediction().then(p=>{
+      if(p){
+        setChampion(p.champion||null);
+        setGoldenBoot(p.golden_boot||null);
+        setFinalist(p.finalist||null);
+        setGroupPicks(p.group_picks||{});
+        setLocked(true); setSubmitted(true);
+      }
+    });
+    getPredictionCounts().then(counts=>{
+      setPredCounts(counts);
+      setTotalPreds(Object.values(counts).reduce((a,b)=>a+b,0));
+    });
   },[]);
 
-  useEffect(()=>{
-    try { localStorage.setItem("golazo_preds", JSON.stringify({champion,goldenBoot,groupPicks,finalist,locked,submitted})); } catch(e){}
-  },[champion,goldenBoot,groupPicks,finalist,locked,submitted]);
-
   const picksDone  = [champion, goldenBoot].filter(Boolean).length + Object.keys(groupPicks).length;
-  const picksTotal = 2 + 12; // champion + golden boot + 12 groups
+  const picksTotal = 2 + 12;
   const pct        = Math.round((picksDone/picksTotal)*100);
   const canSubmit  = champion && goldenBoot;
 
-  const handleLock = () => { setLocked(true); setSubmitted(true); };
+  const handleLock = async () => {
+    await savePrediction({ champion, goldenBoot, finalist, groupPicks });
+    setLocked(true); setSubmitted(true);
+    const counts = await getPredictionCounts();
+    setPredCounts(counts);
+    setTotalPreds(Object.values(counts).reduce((a,b)=>a+b,0));
+  };
   const handleEdit = () => { setLocked(false); setSubmitted(false); };
 
   return (
@@ -1483,7 +1497,7 @@ function PredictionsPage() {
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:"10px",marginBottom:"12px"}}>
           {FAVORITES.map((f,fi)=>{
             const sel = champion===f.name;
-            const cpct = CHAMPION_PCT[f.name]||3;
+            const cpct = totalPreds>0 ? Math.round(((predCounts[f.name]||0)/totalPreds)*100) : (CHAMPION_PCT[f.name]||3);
             return (
               <TeamPickCard
                 key={f.name} flag={f.flag} name={f.name}
@@ -2745,16 +2759,22 @@ function DebatePage() {
   const [suggest,setSuggest]= useState("");
   const [submitted,setSubmitted]=useState(false);
 
-  // load from localStorage
+  // load votes from Supabase
   useEffect(()=>{
-    try{ const v=localStorage.getItem("golazo_debate_votes"); if(v) setMyVotes(JSON.parse(v)); }catch(e){}
+    // Load this fan's votes
+    Promise.all(DEBATES.map(d=>getMyVote(d.id).then(v=>({id:d.id,v})))).then(results=>{
+      const map={};
+      results.forEach(({id,v})=>{ if(v) map[id]=v; });
+      setMyVotes(map);
+    });
   },[]);
 
-  const vote=(debateId, side)=>{
+  const vote=async(debateId, side)=>{
     const current = myVotes[debateId];
-    const updated  = {...myVotes, [debateId]: current===side ? null : side};
+    const newSide = current===side ? null : side;
+    const updated = {...myVotes, [debateId]: newSide};
     setMyVotes(updated);
-    try{ localStorage.setItem("golazo_debate_votes", JSON.stringify(updated)); }catch(e){}
+    if(newSide) await submitVote(debateId, newSide);
   };
 
   const filtered = cat==="all" ? DEBATES : DEBATES.filter(d=>d.category===cat);
