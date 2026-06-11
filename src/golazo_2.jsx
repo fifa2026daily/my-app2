@@ -442,16 +442,32 @@ function GroupsPage() {
 // ─── COUNTDOWN ────────────────────────────────────────────────────────────────
 
 function Countdown() {
+  const [live,setLive]=useState(()=>new Date()>=new Date("2026-06-11T01:00:00Z"));
   const [t,setT]=useState({d:0,h:0,m:0,s:0});
   useEffect(()=>{
+    if(live)return;
     const target=new Date("2026-06-11T01:00:00Z");
     const tick=()=>{
       const diff=target-new Date();
-      if(diff<=0)return;
+      if(diff<=0){setLive(true);return;}
       setT({d:Math.floor(diff/86400000),h:Math.floor((diff%86400000)/3600000),m:Math.floor((diff%3600000)/60000),s:Math.floor((diff%60000)/1000)});
     };
     tick();const id=setInterval(tick,1000);return()=>clearInterval(id);
-  },[]);
+  },[live]);
+
+  if(live) return (
+    <div className="hero-countdown" style={{display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+      <div style={{display:"flex",alignItems:"center",gap:"10px",background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.35)",borderRadius:"12px",padding:"12px 20px"}}>
+        <div style={{width:"10px",height:"10px",borderRadius:"50%",background:"#FF3B30",animation:"pulse 1s infinite",flexShrink:0}}/>
+        <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",color:"#FF3B30",letterSpacing:"0.1em",lineHeight:1}}>LIVE NOW</span>
+      </div>
+      <div style={{background:"rgba(0,0,0,0.4)",border:"1px solid rgba(212,175,55,0.25)",borderRadius:"12px",padding:"12px 16px"}}>
+        <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",color:"#D4AF37",letterSpacing:"0.06em",lineHeight:1}}>FIFA WORLD CUP 2026</div>
+        <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.35)",letterSpacing:"0.08em",marginTop:"3px"}}>Jun 11 – Jul 19 · 104 Matches</div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="hero-countdown" style={{display:"flex",gap:"8px",justifyContent:"flex-start",flexWrap:"wrap"}}>
       {[["DAYS",t.d],["HRS",t.h],["MIN",t.m],["SEC",t.s]].map(([l,v])=>(
@@ -488,15 +504,15 @@ function HomePage({setActiveNav}) {
         <div className="hero-text" style={{position:"relative",zIndex:1,animation:"fadeUp 0.8s ease forwards"}}>
           <div className="hero-badge" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em",flexWrap:"wrap"}}>
             <div style={{width:"7px",height:"7px",background:"#D4AF37",borderRadius:"50%",animation:"pulse 1.4s infinite"}}/>
-            SQUADS LOCKED · 48 TEAMS · KICKOFF IN 6 DAYS
+            🔴 LIVE NOW · 48 TEAMS · MATCHDAY 1 UNDERWAY
           </div>
 
           <h1 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"clamp(4rem,8vw,7.5rem)",lineHeight:0.88,letterSpacing:"0.02em",marginBottom:"16px",background:"linear-gradient(150deg,#FFFFFF 0%,#E8D5A3 35%,#D4AF37 60%,#FF6B35 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
-            IT STARTS<br/>JUNE 11
+            IT'S<br/>ON
           </h1>
 
           <p style={{fontFamily:"'Instrument Serif',serif",fontStyle:"italic",fontSize:"1.1rem",color:"rgba(255,255,255,0.45)",marginBottom:"32px",lineHeight:1.6}}>
-            48 nations. 3 countries. 1 trophy.<br/>The most electric World Cup ever.
+            48 nations. 3 countries. 1 trophy.<br/>The most electric World Cup ever has begun.
           </p>
 
           <Countdown/>
@@ -519,7 +535,7 @@ function HomePage({setActiveNav}) {
           <div style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",padding:"12px 18px"}}>
             <span style={{fontSize:"1.3rem",animation:"float 3s infinite"}}>🇲🇽</span>
             <div>
-              <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.15em",textTransform:"uppercase"}}>Opening Match · Jun 11 · 9PM ET</div>
+              <div style={{fontSize:"0.6rem",color:"#FF3B30",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>🔴 LIVE · Matchday 1 · 9PM ET</div>
               <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em"}}>Mexico vs South Africa · Estadio Azteca</div>
             </div>
             <span style={{fontSize:"1.3rem",animation:"float 3s infinite",animationDelay:"0.5s"}}>🇿🇦</span>
