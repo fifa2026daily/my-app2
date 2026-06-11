@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useWorldCupData } from "./useWorldCupData";
 // Trophy image — place fifa_trophy.png inside C:\Users\HP\my-app\public\
 const TROPHY_IMG = "/fifa_trophy.png";
 
@@ -250,7 +251,27 @@ function Footer() {
 
 // ─── GROUPS PAGE COMPONENTS ───────────────────────────────────────────────────
 
-function StandingsTable({teams}) {
+function StandingsTable({teams, liveStandings}) {
+  // liveStandings: array from API sorted by points, or null (pre-tournament)
+  // Merge live data with our team flag/name data
+  const rows = teams.map((t, i) => {
+    const live = liveStandings?.find(s => s.name.includes(t.name) || t.name.includes(s.name.split(' ')[0]));
+    return {
+      ...t,
+      pos:    live ? (liveStandings.indexOf(live) + 1) : i + 1,
+      played: live?.played  ?? 0,
+      won:    live?.won     ?? 0,
+      draw:   live?.draw    ?? 0,
+      lost:   live?.lost    ?? 0,
+      gf:     live?.goalsFor ?? 0,
+      ga:     live?.goalsAgainst ?? 0,
+      gd:     live?.goalDiff ?? 0,
+      pts:    live?.points  ?? 0,
+    };
+  }).sort((a,b) => liveStandings ? a.pos - b.pos : 0);
+
+  const hasStarted = rows.some(r => r.played > 0);
+
   return (
     <div style={{overflowX:"auto"}}>
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:"0.82rem"}}>
@@ -262,56 +283,74 @@ function StandingsTable({teams}) {
           </tr>
         </thead>
         <tbody>
-          {teams.map((t,i)=>(
+          {rows.map((t,i)=>(
             <tr key={t.name} style={{borderBottom:"1px solid rgba(255,255,255,0.04)",background:i<2?"rgba(212,175,55,0.03)":"transparent"}}>
               <td style={{padding:"11px 10px",textAlign:"center",color:i<2?"#D4AF37":"rgba(255,255,255,0.3)",fontWeight:700,fontSize:"0.75rem"}}>{i+1}</td>
               <td style={{padding:"11px 10px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
                   <span style={{fontSize:"1.1rem"}}>{t.flag}</span>
                   <span style={{fontWeight:i<2?600:400,color:i<2?"#EEE9DF":"rgba(255,255,255,0.7)"}}>{t.name}</span>
-                  {i<2&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"3px",padding:"1px 5px",fontWeight:700}}>{i===0?"SEED 1":"SEED 2"}</span>}
+                  {hasStarted&&i<2&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"3px",padding:"1px 5px",fontWeight:700}}>QUALIFY</span>}
+                  {!hasStarted&&i<2&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"3px",padding:"1px 5px",fontWeight:700}}>{i===0?"SEED 1":"SEED 2"}</span>}
                 </div>
               </td>
-              {[0,0,0,0,0,0,0,0].map((v,vi)=>(
-                <td key={vi} style={{padding:"11px 10px",textAlign:"center",color:vi===7?"#D4AF37":"rgba(255,255,255,0.45)",fontWeight:vi===7?700:400,fontFamily:vi===7?"'Bebas Neue',cursive":"inherit",fontSize:vi===7?"0.95rem":"0.82rem"}}>{vi===6?"—":0}</td>
-              ))}
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.played}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.won}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.draw}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.lost}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.gf}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.ga}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:t.gd>0?"#22C55E":t.gd<0?"#FF6B35":"rgba(255,255,255,0.45)"}}>{t.gd>0?`+${t.gd}`:t.gd}</td>
+              <td style={{padding:"11px 10px",textAlign:"center",color:"#D4AF37",fontWeight:700,fontFamily:"'Bebas Neue',cursive",fontSize:"0.95rem"}}>{t.pts}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <div style={{padding:"8px 10px",display:"flex",alignItems:"center",gap:"6px"}}>
         <div style={{width:"10px",height:"10px",borderRadius:"2px",background:"rgba(212,175,55,0.2)",border:"1px solid rgba(212,175,55,0.3)"}}/>
-        <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)",letterSpacing:"0.1em"}}>QUALIFY FOR ROUND OF 32</span>
+        <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)",letterSpacing:"0.1em"}}>TOP 2 QUALIFY FOR ROUND OF 32</span>
       </div>
     </div>
   );
 }
 
-function FixtureRow({f,isLast}) {
+function FixtureRow({f,isLast,score}) {
   const [hov,setHov]=useState(false);
+  const isLive    = score?.status==="IN_PLAY"||score?.status==="HALFTIME"||score?.status==="PAUSED";
+  const isFinished= score?.status==="FINISHED";
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{display:"flex",alignItems:"center",gap:"10px",padding:"12px 16px",borderRadius:"10px",border:`1px solid ${hov?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)"}`,background:hov?"rgba(212,175,55,0.03)":"transparent",marginBottom:isLast?0:"4px",transition:"all 0.2s",cursor:"pointer"}}>
+      style={{display:"flex",alignItems:"center",gap:"10px",padding:"12px 16px",borderRadius:"10px",border:`1px solid ${isLive?"rgba(255,59,48,0.35)":hov?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)"}`,background:isLive?"rgba(255,59,48,0.05)":hov?"rgba(212,175,55,0.03)":"transparent",marginBottom:isLast?0:"4px",transition:"all 0.2s",cursor:"pointer"}}>
       <div style={{minWidth:"48px",textAlign:"center"}}>
         <div style={{fontSize:"0.58rem",color:"#D4AF37",fontWeight:700,letterSpacing:"0.1em",marginBottom:"2px"}}>MD{f.md}</div>
         <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.35)"}}>{f.date}</div>
       </div>
       <div style={{flex:1,display:"flex",alignItems:"center",gap:"8px"}}>
         <span style={{fontWeight:600,fontSize:"0.88rem"}}>{f.home}</span>
-        <span style={{color:"rgba(255,255,255,0.2)",fontSize:"0.7rem",fontFamily:"'Bebas Neue',cursive",letterSpacing:"0.1em"}}>VS</span>
+        {score && score.home!==null ? (
+          <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
+            <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.2rem",color:isLive?"#FF3B30":"#D4AF37",minWidth:"20px",textAlign:"center"}}>{score.home}</span>
+            <span style={{color:"rgba(255,255,255,0.3)",fontSize:"0.7rem"}}>-</span>
+            <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.2rem",color:isLive?"#FF3B30":"#D4AF37",minWidth:"20px",textAlign:"center"}}>{score.away}</span>
+          </div>
+        ) : (
+          <span style={{color:"rgba(255,255,255,0.2)",fontSize:"0.7rem",fontFamily:"'Bebas Neue',cursive",letterSpacing:"0.1em"}}>VS</span>
+        )}
         <span style={{fontWeight:600,fontSize:"0.88rem"}}>{f.away}</span>
       </div>
       <div style={{textAlign:"right"}}>
         <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.4)"}}>📍 {f.city}</div>
         <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)",marginTop:"2px"}}>{f.venue}</div>
       </div>
-      <div style={{background:"rgba(255,255,255,0.05)",borderRadius:"6px",padding:"4px 9px",fontSize:"0.68rem",color:"rgba(255,255,255,0.5)",fontWeight:500,minWidth:"60px",textAlign:"center"}}>{f.time}</div>
-      {f.confirmed&&<div style={{background:"rgba(34,197,94,0.12)",border:"1px solid rgba(34,197,94,0.25)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.58rem",color:"#22C55E",fontWeight:700}}>✓</div>}
+      {isLive&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.4)",borderRadius:"4px",padding:"2px 8px",fontSize:"0.6rem",color:"#FF3B30",fontWeight:700,animation:"pulse 1s infinite"}}>🔴 LIVE</div>}
+      {isFinished&&<div style={{background:"rgba(255,255,255,0.06)",borderRadius:"4px",padding:"2px 8px",fontSize:"0.6rem",color:"rgba(255,255,255,0.4)",fontWeight:600}}>FT</div>}
+      {!score&&<div style={{background:"rgba(255,255,255,0.05)",borderRadius:"6px",padding:"4px 9px",fontSize:"0.68rem",color:"rgba(255,255,255,0.5)",fontWeight:500,minWidth:"60px",textAlign:"center"}}>{f.time}</div>}
+      {f.confirmed&&!score&&<div style={{background:"rgba(34,197,94,0.12)",border:"1px solid rgba(34,197,94,0.25)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.58rem",color:"#22C55E",fontWeight:700}}>✓</div>}
     </div>
   );
 }
 
-function GroupDetail({group,onBack}) {
+function GroupDetail({group,onBack,getScore,standings}) {
   const [mdFilter,setMdFilter]=useState(0);
   const filtered=mdFilter===0?group.fixtures:group.fixtures.filter(f=>f.md===mdFilter);
   return (
@@ -344,7 +383,7 @@ function GroupDetail({group,onBack}) {
         <div>
           <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:"12px"}}>Standings</div>
           <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",overflow:"hidden"}}>
-            <StandingsTable teams={group.teams}/>
+            <StandingsTable teams={group.teams} liveStandings={standings?.[group.id]}/>
           </div>
         </div>
       </div>
@@ -359,7 +398,7 @@ function GroupDetail({group,onBack}) {
             ))}
           </div>
         </div>
-        {filtered.map((f,i)=><FixtureRow key={i} f={f} isLast={i===filtered.length-1}/>)}
+        {filtered.map((f,i)=><FixtureRow key={i} f={f} isLast={i===filtered.length-1} score={getScore?getScore(f.home,f.away):null}/>)}
       </div>
     </div>
   );
@@ -396,6 +435,7 @@ function GroupCard({group,onClick,index=0}) {
 function GroupsPage() {
   const [selected,setSelected]=useState(null);
   const [filter,setFilter]=useState("all");
+  const { getScore, standings, lastUpdated, loading:apiLoading } = useWorldCupData();
   const visible=filter==="danger"?GROUPS.filter(g=>g.danger):GROUPS;
   const selectedGroup=selected?GROUPS.find(g=>g.id===selected):null;
   return (
@@ -432,7 +472,7 @@ function GroupsPage() {
         </>
       )}
       {selectedGroup
-        ? <GroupDetail group={selectedGroup} onBack={()=>setSelected(null)}/>
+        ? <GroupDetail group={selectedGroup} onBack={()=>setSelected(null)} getScore={getScore} standings={standings}/>
         : <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(260px, 1fr))",gap:"12px"}}>{visible.map((g,i)=><GroupCard key={g.id} group={g} index={i} onClick={()=>setSelected(g.id)}/>)}</div>
       }
     </div>
