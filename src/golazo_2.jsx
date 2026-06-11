@@ -521,6 +521,73 @@ function Countdown() {
   );
 }
 
+// ─── LIVE ACTIVITY STRIP ─────────────────────────────────────────────────────
+
+function LiveActivityStrip({setActiveNav}) {
+  const [predCount,   setPredCount]   = useState(0);
+  const [leadTeam,    setLeadTeam]    = useState(null);
+  const [leadPct,     setLeadPct]     = useState(0);
+  const [debateVotes, setDebateVotes] = useState(0);
+
+  useEffect(()=>{
+    getPredictionCounts().then(counts=>{
+      const total = Object.values(counts).reduce((a,b)=>a+b,0);
+      setPredCount(total);
+      if(total>0){
+        const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+        setLeadTeam(top[0]);
+        setLeadPct(Math.round((top[1]/total)*100));
+      }
+    });
+    Promise.all(DEBATES.map(d=>getVoteCounts(d.id))).then(results=>{
+      const total = results.reduce((s,c)=>s+(c.A||0)+(c.B||0),0);
+      setDebateVotes(total);
+    });
+  },[]);
+
+  const teamData = GROUPS.flatMap(g=>g.teams).find(t=>t.name===leadTeam);
+
+  return (
+    <div style={{background:"linear-gradient(90deg,rgba(212,175,55,0.08),rgba(255,107,53,0.06),rgba(212,175,55,0.08))",borderTop:"1px solid rgba(212,175,55,0.12)",borderBottom:"1px solid rgba(212,175,55,0.12)",padding:"20px 28px"}}>
+      <div style={{maxWidth:"1100px",margin:"0 auto",display:"flex",alignItems:"center",gap:"16px",flexWrap:"wrap",justifyContent:"space-between"}}>
+
+        {/* Stats */}
+        <div style={{display:"flex",gap:"24px",flexWrap:"wrap",alignItems:"center"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+            <div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#22C55E",animation:"pulse 1.5s infinite",flexShrink:0}}/>
+            <span style={{fontSize:"0.8rem",color:"rgba(255,255,255,0.5)"}}>
+              <span style={{color:"#EEE9DF",fontWeight:700}}>{predCount.toLocaleString()}</span> fans locked predictions
+            </span>
+          </div>
+          {leadTeam && (
+            <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
+              <span style={{fontSize:"1rem"}}>{teamData?.flag||"🏆"}</span>
+              <span style={{fontSize:"0.8rem",color:"rgba(255,255,255,0.5)"}}>
+                <span style={{color:"#D4AF37",fontWeight:700}}>{leadTeam}</span> leading at <span style={{color:"#D4AF37",fontWeight:700}}>{leadPct}%</span>
+              </span>
+            </div>
+          )}
+          {debateVotes>0&&(
+            <div style={{fontSize:"0.8rem",color:"rgba(255,255,255,0.5)"}}>
+              <span style={{color:"#EEE9DF",fontWeight:700}}>{debateVotes.toLocaleString()}</span> debate votes cast
+            </div>
+          )}
+        </div>
+
+        {/* CTAs */}
+        <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+          <button onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"9px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"6px"}}>
+            🔮 Lock Your Prediction
+          </button>
+          <button onClick={()=>setActiveNav("Debate")} style={{background:"rgba(255,107,53,0.15)",color:"#FF6B35",border:"1px solid rgba(255,107,53,0.3)",borderRadius:"8px",padding:"9px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"6px"}}>
+            🔥 Join the Debate
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 
 function HomePage({setActiveNav}) {
@@ -642,6 +709,9 @@ function HomePage({setActiveNav}) {
           ))}
         </div>
       </div>
+
+      {/* ── LIVE ACTIVITY STRIP ── */}
+      <LiveActivityStrip setActiveNav={setActiveNav}/>
 
       {/* ── STADIUM ATMOSPHERE SECTION ── */}
       <section style={{position:"relative",overflow:"hidden",margin:"0"}}>
@@ -2753,19 +2823,25 @@ const DEBATES = [
 ];
 
 function DebatePage() {
-  const [cat,    setCat]    = useState("all");
-  const [myVotes,setMyVotes]= useState({});
-  const [showForm,setShowForm]=useState(false);
-  const [suggest,setSuggest]= useState("");
-  const [submitted,setSubmitted]=useState(false);
+  const [cat,       setCat]      = useState("all");
+  const [myVotes,   setMyVotes]  = useState({});
+  const [voteCounts,setVoteCounts]= useState({});
+  const [showForm,  setShowForm] = useState(false);
+  const [suggest,   setSuggest]  = useState("");
+  const [submitted, setSubmitted]= useState(false);
 
-  // load votes from Supabase
   useEffect(()=>{
     // Load this fan's votes
     Promise.all(DEBATES.map(d=>getMyVote(d.id).then(v=>({id:d.id,v})))).then(results=>{
       const map={};
       results.forEach(({id,v})=>{ if(v) map[id]=v; });
       setMyVotes(map);
+    });
+    // Load real vote counts for all debates
+    Promise.all(DEBATES.map(d=>getVoteCounts(d.id).then(c=>({id:d.id,c})))).then(results=>{
+      const map={};
+      results.forEach(({id,c})=>{ map[id]=c; });
+      setVoteCounts(map);
     });
   },[]);
 
@@ -2868,11 +2944,13 @@ function DebatePage() {
   );
 }
 
-function DebateCard({debate, myVote, onVote, featured, index}) {
+function DebateCard({debate, myVote, onVote, featured, index, liveVotes}) {
   const [hov,setHov]=useState(false);
   const hasVoted = myVote!=null;
-  const total    = debate.sideA.votes + debate.sideB.votes;
-  const pctA     = Math.round((debate.sideA.votes/total)*100);
+  const realA    = liveVotes?.A || debate.sideA.votes;
+  const realB    = liveVotes?.B || debate.sideB.votes;
+  const total    = realA + realB;
+  const pctA     = Math.round((realA/total)*100);
   const pctB     = 100-pctA;
   const catColor = DEBATE_CATS.find(c=>c.id===debate.category)?.color||"#D4AF37";
 
@@ -2880,7 +2958,7 @@ function DebateCard({debate, myVote, onVote, featured, index}) {
   const [barA,setBarA]=useState(0);
   const [barB,setBarB]=useState(0);
   useEffect(()=>{
-    if(hasVoted){ const t=setTimeout(()=>{setBarA(pctA);setBarB(pctB);},100); return()=>clearTimeout(t); }
+    if(hasVoted||liveVotes){ const t=setTimeout(()=>{setBarA(pctA);setBarB(pctB);},100); return()=>clearTimeout(t); }
     else{ setBarA(0);setBarB(0); }
   },[hasVoted,pctA,pctB]);
 
@@ -2904,7 +2982,7 @@ function DebateCard({debate, myVote, onVote, featured, index}) {
           {DEBATE_CATS.find(c=>c.id===debate.category)?.label||debate.category.toUpperCase()}
         </span>
         {debate.hot && <span style={{background:"rgba(255,59,48,0.12)",border:"1px solid rgba(255,59,48,0.25)",color:"#FF3B30",borderRadius:"20px",padding:"2px 8px",fontSize:"0.58rem",fontWeight:700}}>🔥 TRENDING</span>}
-        <span style={{marginLeft:"auto",fontSize:"0.65rem",color:"rgba(255,255,255,0.3)"}}>{(total/1000).toFixed(1)}K votes</span>
+        <span style={{marginLeft:"auto",fontSize:"0.65rem",color:"rgba(255,255,255,0.3)"}}>{total>=1000?(total/1000).toFixed(1)+"K":total} votes</span>
       </div>
 
       {/* question */}

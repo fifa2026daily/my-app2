@@ -11,5 +11,13 @@
   <body style="margin:0;background:#060A10;">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <style>
+      img.emoji { height: 1em; width: 1em; margin: 0 0.05em 0 0.1em; vertical-align: -0.1em; display: inline; }
+    </style>
+    <script>
+      const observer = new MutationObserver(() => twemoji.parse(document.body, {folder:'svg', ext:'.svg'}));
+      observer.observe(document.body, {childList:true, subtree:true});
+    </script>
   </body>
 </html>
