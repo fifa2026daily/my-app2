@@ -151,7 +151,7 @@ const PLAYERS = [
   {name:"Lamine Yamal",flag:"🇪🇸",country:"Spain",position:"Winger",age:18,wcGoals:0,caps:31,accent:"#AA151B",tag:"FUTURE IS NOW",bio:"18 years old. Euro 2024 winner. Spain's hope on the left flank."},
 ];
 
-const NAV = ["Home","Groups","Fixtures","Buzz","Predictions","Kits","Debate"];
+const NAV = ["Home","Groups","Fixtures","Buzz","Kits","Predictions","Debate"];
 
 // ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 
@@ -188,15 +188,30 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
 
         {/* DESKTOP NAV */}
         <div className="nav-links" style={{display:"flex",gap:"2px"}}>
-          {NAV.map(n=>(
-            <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
-              background:"none",border:"none",cursor:"pointer",padding:"6px 10px",borderRadius:"6px",
-              fontSize:"0.75rem",fontWeight:500,fontFamily:"'DM Sans',sans-serif",
-              color:activeNav===n?"#D4AF37":"rgba(255,255,255,0.45)",
-              borderBottom:activeNav===n?"2px solid #D4AF37":"2px solid transparent",
-              transition:"all 0.2s",
-            }}>{n}</button>
-          ))}
+          {NAV.map(n=>{
+            const isUSP = n==="Predictions" || n==="Debate";
+            const icon  = n==="Predictions"?"🔮":n==="Debate"?"🔥":null;
+            const isActive = activeNav===n;
+            if(isUSP) return (
+              <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
+                background:isActive?"#D4AF37":n==="Predictions"?"rgba(212,175,55,0.12)":"rgba(255,107,53,0.12)",
+                border:`1px solid ${isActive?"#D4AF37":n==="Predictions"?"rgba(212,175,55,0.35)":"rgba(255,107,53,0.35)"}`,
+                cursor:"pointer",padding:"5px 11px",borderRadius:"20px",
+                fontSize:"0.72rem",fontWeight:700,fontFamily:"'DM Sans',sans-serif",
+                color:isActive?"#060A10":n==="Predictions"?"#D4AF37":"#FF6B35",
+                transition:"all 0.2s",display:"flex",alignItems:"center",gap:"4px",
+              }}>{icon}{n}</button>
+            );
+            return (
+              <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
+                background:"none",border:"none",cursor:"pointer",padding:"6px 10px",borderRadius:"6px",
+                fontSize:"0.75rem",fontWeight:500,fontFamily:"'DM Sans',sans-serif",
+                color:isActive?"#D4AF37":"rgba(255,255,255,0.45)",
+                borderBottom:isActive?"2px solid #D4AF37":"2px solid transparent",
+                transition:"all 0.2s",
+              }}>{n}</button>
+            );
+          })}
         </div>
 
         {/* RIGHT ACTIONS */}
@@ -214,16 +229,24 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
       {/* MOBILE DROPDOWN MENU */}
       {mobileOpen&&(
         <div style={{position:"fixed",top:"60px",left:0,right:0,zIndex:99,background:"rgba(6,10,16,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(212,175,55,0.15)",padding:"8px 0 16px",animation:"fadeUp 0.2s ease both"}}>
-          {NAV.map(n=>(
-            <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
-              display:"block",width:"100%",background:"none",border:"none",
-              padding:"14px 24px",textAlign:"left",cursor:"pointer",
-              fontFamily:"'DM Sans',sans-serif",fontSize:"1rem",fontWeight:500,
-              color:activeNav===n?"#D4AF37":"rgba(255,255,255,0.65)",
-              borderLeft:activeNav===n?"3px solid #D4AF37":"3px solid transparent",
-              transition:"all 0.15s",
-            }}>{n}</button>
-          ))}
+          {NAV.map(n=>{
+            const isUSP = n==="Predictions" || n==="Debate";
+            const icon  = n==="Predictions"?"🔮 ":n==="Debate"?"🔥 ":"";
+            const isActive = activeNav===n;
+            return (
+              <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
+                display:"block",width:"100%",cursor:"pointer",
+                padding:"14px 24px",textAlign:"left",
+                fontFamily:"'DM Sans',sans-serif",fontSize:"1rem",
+                fontWeight:isUSP?700:500,
+                color:isActive?"#D4AF37":isUSP?(n==="Predictions"?"#D4AF37":"#FF6B35"):"rgba(255,255,255,0.65)",
+                background:isUSP&&!isActive?(n==="Predictions"?"rgba(212,175,55,0.05)":"rgba(255,107,53,0.05)"):"none",
+                border:"none",
+                borderLeft:isActive?"3px solid #D4AF37":isUSP?(n==="Predictions"?"3px solid rgba(212,175,55,0.4)":"3px solid rgba(255,107,53,0.4)"):"3px solid transparent",
+                transition:"all 0.15s",
+              }}>{icon}{n}</button>
+            );
+          })}
           <div style={{margin:"8px 24px 0",paddingTop:"12px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
             <button onClick={()=>{onJoin();setMobileOpen(false);}} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"12px 24px",fontWeight:700,fontSize:"0.9rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",width:"100%"}}>
               🔥 Join The Fan World
@@ -597,6 +620,7 @@ function HomePage({setActiveNav}) {
   const [hovPlayer,setHovPlayer]=useState(null);
   const [trophyLoaded,setTrophyLoaded]=useState(false);
   const [trophyError,setTrophyError]=useState(false);
+  const { getScore } = useWorldCupData();
 
   return (
     <>
@@ -639,15 +663,39 @@ function HomePage({setActiveNav}) {
             <img src="/fifa_trophy.png" alt="FIFA Trophy" style={{width:"120px",filter:"drop-shadow(0 0 30px rgba(212,175,55,0.5))",animation:"float-trophy 4s ease-in-out infinite"}} onError={e=>e.target.style.display="none"}/>
           </div>
 
-          {/* Opening match badge */}
-          <div style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",padding:"12px 18px"}}>
-            <span style={{fontSize:"1.3rem",animation:"float 3s infinite"}}>🇲🇽</span>
-            <div>
-              <div style={{fontSize:"0.6rem",color:"#FF3B30",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>🔴 LIVE · Matchday 1 · 9PM ET</div>
-              <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em"}}>Mexico vs South Africa · Estadio Azteca</div>
-            </div>
-            <span style={{fontSize:"1.3rem",animation:"float 3s infinite",animationDelay:"0.5s"}}>🇿🇦</span>
-          </div>
+          {/* Next match badge — dynamic */}
+          {(()=>{
+            const next = getNextMatch();
+            if(!next) return null;
+            const isToday = next.date === new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).replace(",","");
+            return (
+              <div style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",padding:"12px 18px"}}>
+                <span style={{fontSize:"1.3rem",animation:"float 3s infinite"}}>{next.homeTeam?.flag||"⚽"}</span>
+                <div>
+                  {(()=>{
+                    const sc = getScore(next.home, next.away);
+                    const isLive = sc?.status==="IN_PLAY"||sc?.status==="HALFTIME"||sc?.status==="PAUSED";
+                    const isFT  = sc?.status==="FINISHED";
+                    return (
+                      <>
+                        <div style={{fontSize:"0.6rem",color:isLive?"#FF3B30":isToday?"#FF6B35":"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>
+                          {isLive?"🔴 LIVE NOW":isFT?"✅ FULL TIME":isToday?"🔴 TODAY":"📅 NEXT"} · {!isFT&&!isLive&&`${convertTime(next.time, 9.5)} IST`}
+                        </div>
+                        <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:"8px"}}>
+                          {next.home}
+                          {sc && sc.home!==null && (
+                            <span style={{color:isLive?"#FF3B30":"#D4AF37",fontSize:"1.2rem",fontWeight:700}}> {sc.home} - {sc.away} </span>
+                          )}
+                          {next.away} · {next.city}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+                <span style={{fontSize:"1.3rem",animation:"float 3s infinite",animationDelay:"0.5s"}}>{next.awayTeam?.flag||"⚽"}</span>
+              </div>
+            );
+          })()}
         </div>
 
         {/* RIGHT — Trophy */}
@@ -745,80 +793,7 @@ function HomePage({setActiveNav}) {
         </div>
       </section>
 
-      {/* ── FIFA FAN FESTIVAL ── */}
-      <section style={{padding:"60px 28px 0",maxWidth:"1200px",margin:"0 auto"}}>
-        <div style={{marginBottom:"28px"}}>
-          <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>Official FIFA Event · All 16 Host Cities</div>
-          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em",marginBottom:"16px"}}>FIFA Fan Festival™</h2>
-          {/* what it is */}
-          <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"20px",alignItems:"center",background:"rgba(212,175,55,0.05)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:"14px",padding:"20px 24px",marginBottom:"24px"}}>
-            <div>
-              <p style={{fontSize:"0.9rem",color:"rgba(255,255,255,0.7)",lineHeight:1.7,marginBottom:"12px"}}>
-                The <strong style={{color:"#D4AF37"}}>FIFA Fan Festival™</strong> is the official free public fan zone running alongside every match day of the World Cup. Set up in the heart of each host city, it's an outdoor venue with <strong style={{color:"#EEE9DF"}}>live match screenings</strong>, concerts, food, local culture, interactive football activities, and meet-and-greet events — no match ticket required.
-              </p>
-              <div style={{display:"flex",gap:"20px",flexWrap:"wrap"}}>
-                {[["🎟️","No ticket needed"],["📺","Live match screenings"],["🎵","Concerts & music"],["⚽","Kick-about zones"],["🍔","Food & culture"]].map(([icon,label])=>(
-                  <div key={label} style={{display:"flex",alignItems:"center",gap:"6px",fontSize:"0.75rem",color:"rgba(255,255,255,0.5)"}}>
-                    <span>{icon}</span><span>{label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{textAlign:"center",padding:"16px 20px",background:"rgba(34,197,94,0.08)",border:"1px solid rgba(34,197,94,0.2)",borderRadius:"10px",minWidth:"120px"}}>
-              <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",color:"#22C55E",lineHeight:1}}>FREE</div>
-              <div style={{fontSize:"0.62rem",color:"rgba(34,197,94,0.7)",letterSpacing:"0.12em",marginTop:"4px"}}>EVERY DAY</div>
-              <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.3)",marginTop:"6px"}}>Jun 11 – Jul 19</div>
-            </div>
-          </div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:"10px"}}>
-          {[
-            {city:"New York/NJ",  flag:"🇺🇸", venue:"Liberty State Park",    matches:6, final:true },
-            {city:"Los Angeles",  flag:"🇺🇸", venue:"Grand Park",            matches:6, final:false},
-            {city:"Dallas",       flag:"🇺🇸", venue:"Fair Park",             matches:6, final:false},
-            {city:"Houston",      flag:"🇺🇸", venue:"Aramco Arena",          matches:5, final:false},
-            {city:"San Francisco",flag:"🇺🇸", venue:"Justin Herman Plaza",   matches:5, final:false},
-            {city:"Miami",        flag:"🇺🇸", venue:"Bayfront Park",         matches:4, final:false},
-            {city:"Seattle",      flag:"🇺🇸", venue:"Seattle Center",        matches:4, final:false},
-            {city:"Boston",       flag:"🇺🇸", venue:"City Hall Plaza",       matches:4, final:false},
-            {city:"Philadelphia", flag:"🇺🇸", venue:"Penn's Landing",        matches:4, final:false},
-            {city:"Kansas City",  flag:"🇺🇸", venue:"Crown Center",          matches:4, final:false},
-            {city:"Atlanta",      flag:"🇺🇸", venue:"Centennial Park",       matches:4, final:false},
-            {city:"Mexico City",  flag:"🇲🇽", venue:"Zócalo",               matches:3, final:false},
-            {city:"Guadalajara",  flag:"🇲🇽", venue:"TBA",                  matches:3, final:false},
-            {city:"Monterrey",    flag:"🇲🇽", venue:"TBA",                  matches:3, final:false},
-            {city:"Toronto",      flag:"🇨🇦", venue:"Nathan Phillips Square",matches:3, final:false},
-            {city:"Vancouver",    flag:"🇨🇦", venue:"Jack Poole Plaza",      matches:3, final:false},
-          ].map((f,i)=>{
-            const [hov,setHov]=useState(false);
-            return (
-              <div key={f.city} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-                style={{
-                  background:hov?"rgba(212,175,55,0.06)":"rgba(255,255,255,0.02)",
-                  border:`1px solid ${f.final?"rgba(212,175,55,0.35)":hov?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.07)"}`,
-                  borderRadius:"12px",padding:"16px",cursor:"pointer",
-                  transition:"all 0.2s",transform:hov?"translateY(-2px)":"none",
-                  position:"relative",overflow:"hidden",
-                }}>
-                {f.final&&<div style={{position:"absolute",top:0,left:0,right:0,height:"2px",background:"linear-gradient(90deg,#D4AF37,#FF6B35)"}}/>}
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"10px"}}>
-                  <span style={{fontSize:"1.6rem"}}>{f.flag}</span>
-                  {f.final&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"4px",padding:"2px 6px",fontWeight:700,letterSpacing:"0.08em"}}>🏆 FINAL</span>}
-                </div>
-                <div style={{fontWeight:700,fontSize:"0.85rem",marginBottom:"3px"}}>{f.city}</div>
-                <div style={{fontSize:"0.65rem",color:"rgba(255,255,255,0.35)",marginBottom:"10px"}}>{f.venue}</div>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)"}}>Matches hosted</span>
-                  <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",color:"#D4AF37"}}>{f.matches}</span>
-                </div>
-                <div style={{marginTop:"8px",fontSize:"0.6rem",color:"rgba(34,197,94,0.8)",fontWeight:600,letterSpacing:"0.06em"}}>✓ FREE ENTRY</div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ── PLAYER WATCH ── */}
+            {/* ── PLAYER WATCH ── */}
       <section style={{padding:"60px 28px 0",maxWidth:"1200px",margin:"0 auto"}}>
         <div style={{marginBottom:"24px"}}>
           <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>The names you're watching</div>
@@ -1744,7 +1719,7 @@ function PredictionsPage() {
               </div>
             </div>
             <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.3)"}}>
-              Editable until Jun 11 kickoff
+              ⚽ Tournament underway — predict now!
             </div>
           </div>
         )}
@@ -2826,9 +2801,7 @@ function DebatePage() {
   const [cat,       setCat]      = useState("all");
   const [myVotes,   setMyVotes]  = useState({});
   const [voteCounts,setVoteCounts]= useState({});
-  const [showForm,  setShowForm] = useState(false);
-  const [suggest,   setSuggest]  = useState("");
-  const [submitted, setSubmitted]= useState(false);
+
 
   useEffect(()=>{
     // Load this fan's votes
@@ -2884,31 +2857,10 @@ function DebatePage() {
             transition:"all 0.2s",
           }}>{c.label}</button>
         ))}
-        <button onClick={()=>setShowForm(v=>!v)} style={{marginLeft:"auto",background:"rgba(212,175,55,0.08)",border:"1px solid rgba(212,175,55,0.2)",borderRadius:"20px",padding:"6px 14px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"0.75rem",color:"#D4AF37",fontWeight:600,transition:"all 0.2s"}}>
-          + Suggest a Debate
-        </button>
+
       </div>
 
-      {/* ── SUGGEST FORM ── */}
-      {showForm && (
-        <div style={{marginBottom:"24px",background:"rgba(212,175,55,0.05)",border:"1px solid rgba(212,175,55,0.2)",borderRadius:"14px",padding:"20px",animation:"slideUp 0.3s ease both"}}>
-          {submitted ? (
-            <div style={{textAlign:"center",padding:"8px"}}>
-              <div style={{fontSize:"1.4rem",marginBottom:"6px"}}>🎙️</div>
-              <div style={{fontWeight:600,color:"#D4AF37",marginBottom:"4px"}}>Debate suggested!</div>
-              <div style={{fontSize:"0.78rem",color:"rgba(255,255,255,0.4)"}}>We'll review and add the best ones.</div>
-            </div>
-          ) : (
-            <>
-              <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.5)",marginBottom:"10px"}}>What debate do you want the community to vote on?</div>
-              <div style={{display:"flex",gap:"8px"}}>
-                <input value={suggest} onChange={e=>setSuggest(e.target.value)} placeholder="e.g. Is Haaland Norway's greatest ever player?" style={{flex:1,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"9px 14px",color:"#EEE9DF",fontSize:"0.82rem",fontFamily:"'DM Sans',sans-serif",outline:"none"}}/>
-                <button onClick={()=>{if(suggest.trim()){setSubmitted(true);}}} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"9px 18px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>Submit</button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+
 
       {/* ── FEATURED DEBATE ── */}
       {featured && <DebateCard debate={featured} myVote={myVotes[featured.id]} onVote={vote} featured={true} index={0}/>}
@@ -2923,7 +2875,7 @@ function DebatePage() {
       {/* ── COMMUNITY STATS ── */}
       <div style={{marginTop:"36px",padding:"20px 24px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"14px",display:"flex",gap:"24px",flexWrap:"wrap",alignItems:"center"}}>
         <div>
-          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",color:"#D4AF37",lineHeight:1}}>{DEBATES.reduce((s,d)=>s+d.sideA.votes+d.sideB.votes,0).toLocaleString()}</div>
+          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",color:"#D4AF37",lineHeight:1}}>{(DEBATES.reduce((s,d)=>s+d.sideA.votes+d.sideB.votes,0) + Object.values(voteCounts).reduce((s,c)=>s+(c.A||0)+(c.B||0),0)).toLocaleString()}</div>
           <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.1em",textTransform:"uppercase"}}>Total votes cast</div>
         </div>
         <div style={{width:"1px",height:"40px",background:"rgba(255,255,255,0.06)"}}/>
@@ -2936,8 +2888,9 @@ function DebatePage() {
           <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",color:"#A78BFA",lineHeight:1}}>{Object.keys(myVotes).filter(k=>myVotes[k]).length}</div>
           <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.1em",textTransform:"uppercase"}}>Your votes</div>
         </div>
-        <div style={{marginLeft:"auto",fontSize:"0.75rem",color:"rgba(255,255,255,0.3)",maxWidth:"200px",textAlign:"right"}}>
-          Supabase integration coming — your votes will be shared with the global Golazo community.
+        <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"6px"}}>
+          <div style={{width:"7px",height:"7px",borderRadius:"50%",background:"#22C55E",animation:"pulse 1.5s infinite"}}/>
+          <span style={{fontSize:"0.72rem",color:"rgba(34,197,94,0.8)",fontWeight:600}}>LIVE · Votes shared globally</span>
         </div>
       </div>
     </div>
