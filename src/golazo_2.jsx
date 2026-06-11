@@ -1110,7 +1110,7 @@ function FixturesPage() {
         <div style={{marginBottom:"28px",background:"linear-gradient(135deg,rgba(212,175,55,0.1),rgba(255,107,53,0.06))",border:"1px solid rgba(212,175,55,0.25)",borderRadius:"16px",padding:"20px 24px",position:"relative",overflow:"hidden",animation:"scaleIn 0.5s ease 0.2s both"}}>
           <div style={{position:"absolute",right:"-10px",top:"-10px",fontSize:"7rem",opacity:0.04,pointerEvents:"none"}}>⚽</div>
           <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"12px"}}>⚡ Next Match Up</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",gap:"16px",marginBottom:"16px"}}>
+          <div className="next-match-teams" style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",gap:"12px",marginBottom:"16px"}}>
             <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
               <span style={{fontSize:"2.2rem"}}>{nextMatch.homeTeam.flag}</span>
               <div>
@@ -1276,7 +1276,7 @@ function MatchCard({f, isGroup, tz="ET"}) {
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       style={{
         display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",
-        gap:"16px",padding:"16px 20px",borderRadius:"12px",
+        gap:"8px",padding:"16px 12px",borderRadius:"12px",
         border:`1px solid ${hov?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,
         background:hov?"rgba(212,175,55,0.03)":"rgba(255,255,255,0.015)",
         transition:"all 0.2s",cursor:"pointer",position:"relative",overflow:"hidden",
@@ -1952,7 +1952,7 @@ function BuzzPage() {
         ))}
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:"20px",alignItems:"start"}}>
+      <div className="buzz-layout" style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:"20px",alignItems:"start"}}>
 
         {/* ── LEFT — FEED ── */}
         <div>
@@ -3181,6 +3181,9 @@ export default function Golazo() {
           .hero-btns{justify-content:center!important;flex-direction:column!important;}
           .hero-btns button{width:100%!important;justify-content:center!important;}
           .hero-badge{justify-content:center!important;}
+          .buzz-layout{grid-template-columns:1fr!important;}
+          .next-match-teams{grid-template-columns:1fr!important;text-align:center;}
+          .next-match-teams>div:last-child{flex-direction:row-reverse!important;}
         }
 
       `}</style>
