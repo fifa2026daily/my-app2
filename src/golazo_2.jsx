@@ -127,12 +127,12 @@ const OPENING_FIXTURES = [
 ];
 
 const STORYLINES = [
-  {icon:"👑",tag:"DEFENDING CHAMPS",headline:"Messi & Argentina begin title defence vs Algeria on Jun 16",heat:98,accent:"#75AADB"},
-  {icon:"⚡",tag:"MBAPPE WATCH",headline:"Mbappé leads France in Group I — can he finally win it all?",heat:96,accent:"#003189"},
-  {icon:"🐐",tag:"FINAL DANCE?",headline:"Ronaldo's last World Cup — Portugal in Group K",heat:94,accent:"#006600"},
-  {icon:"🌟",tag:"YOUNG GUN",headline:"Lamine Yamal, 18, carries Spain's hopes in Group H",heat:91,accent:"#AA151B"},
-  {icon:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",tag:"THREE LIONS",headline:"England open vs Croatia on Jun 17 — revenge for 2018?",heat:89,accent:"#CF081F"},
-  {icon:"🇧🇷",tag:"SAMBA MAGIC",headline:"Brazil vs Morocco is Jun 13's most anticipated group opener",heat:92,accent:"#009C3B"},
+  {icon:"",tag:"DEFENDING CHAMPS",headline:"Messi & Argentina begin title defence vs Algeria on Jun 16",heat:98,accent:"#75AADB"},
+  {icon:"",tag:"MBAPPE WATCH",headline:"Mbappé leads France in Group I — can he finally win it all?",heat:96,accent:"#003189"},
+  {icon:"",tag:"FINAL DANCE?",headline:"Ronaldo's last World Cup — Portugal in Group K",heat:94,accent:"#006600"},
+  {icon:"",tag:"YOUNG GUN",headline:"Lamine Yamal, 18, carries Spain's hopes in Group H",heat:91,accent:"#AA151B"},
+  {icon:"",tag:"THREE LIONS",headline:"England open vs Croatia on Jun 17 — revenge for 2018?",heat:89,accent:"#CF081F"},
+  {icon:"",tag:"SAMBA MAGIC",headline:"Brazil vs Morocco is Jun 13's most anticipated group opener",heat:92,accent:"#009C3B"},
 ];
 
 const FAVORITES = [
@@ -145,7 +145,7 @@ const FAVORITES = [
 ];
 
 const PLAYERS = [
-  {name:"Lionel Messi",flag:"🇦🇷",country:"Argentina",position:"Forward",age:38,wcGoals:13,caps:180,accent:"#75AADB",tag:"THE GOAT",bio:"His 6th and final World Cup. Defending champion. Enough said."},
+  {name:"Lionel Messi",flag:"🇦🇷",country:"Argentina",position:"Forward",age:38,wcGoals:13,caps:180,accent:"#75AADB",tag:"LEGEND",bio:"His 6th and final World Cup. Defending champion. Enough said."},
   {name:"Kylian Mbappé",flag:"🇫🇷",country:"France",position:"Forward",age:27,wcGoals:12,caps:88,accent:"#003189",tag:"GENERATIONAL",bio:"FIFA #1 nation's captain. The world is watching every single run."},
   {name:"Cristiano Ronaldo",flag:"🇵🇹",country:"Portugal",position:"Forward",age:41,wcGoals:8,caps:212,accent:"#006600",tag:"FINAL DANCE",bio:"One last shot at the only trophy missing from the GOAT debate."},
   {name:"Lamine Yamal",flag:"🇪🇸",country:"Spain",position:"Winger",age:18,wcGoals:0,caps:31,accent:"#AA151B",tag:"FUTURE IS NOW",bio:"18 years old. Euro 2024 winner. Spain's hope on the left flank."},
@@ -190,7 +190,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
         <div className="nav-links" style={{display:"flex",gap:"2px"}}>
           {NAV.map(n=>{
             const isUSP = n==="Predictions" || n==="Debate" || n==="Top Scorers";
-            const icon  = n==="Predictions"?"🔮":n==="Debate"?"🔥":n==="Top Scorers"?"⚽":null;
+            const icon  = n==="Debate"?"🔥":null;
             const isActive = activeNav===n;
             if(isUSP) return (
               <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
@@ -231,7 +231,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
         <div style={{position:"fixed",top:"60px",left:0,right:0,zIndex:99,background:"rgba(6,10,16,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(212,175,55,0.15)",padding:"8px 0 16px",animation:"fadeUp 0.2s ease both"}}>
           {NAV.map(n=>{
             const isUSP = n==="Predictions" || n==="Debate";
-            const icon  = n==="Predictions"?"🔮 ":n==="Debate"?"🔥 ":n==="Top Scorers"?"⚽ ":"";
+            const icon  = n==="Debate"?"🔥 ":"";
             const isActive = activeNav===n;
             return (
               <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
@@ -363,7 +363,7 @@ function FixtureRow({f,isLast,score}) {
         <span style={{fontWeight:600,fontSize:"0.88rem"}}>{f.away}</span>
       </div>
       <div style={{textAlign:"right"}}>
-        <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.4)"}}>📍 {f.city}</div>
+        <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.4)"}}>{f.city}</div>
         <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)",marginTop:"2px"}}>{f.venue}</div>
       </div>
       {isLive&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.4)",borderRadius:"4px",padding:"2px 8px",fontSize:"0.6rem",color:"#FF3B30",fontWeight:700,animation:"pulse 1s infinite"}}>🔴 LIVE</div>}
@@ -738,7 +738,7 @@ function LiveActivityStrip({setActiveNav}) {
         {/* CTAs */}
         <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
           <button onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"9px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"6px"}}>
-            🔮 Lock Your Prediction
+            Lock Your Prediction
           </button>
           <button onClick={()=>setActiveNav("Debate")} style={{background:"rgba(255,107,53,0.15)",color:"#FF6B35",border:"1px solid rgba(255,107,53,0.3)",borderRadius:"8px",padding:"9px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"6px"}}>
             🔥 Join the Debate
@@ -774,7 +774,7 @@ function HomePage({setActiveNav}) {
         <div className="hero-text" style={{position:"relative",zIndex:1,animation:"fadeUp 0.8s ease forwards"}}>
           <div className="hero-badge" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em",flexWrap:"wrap"}}>
             <div style={{width:"7px",height:"7px",background:"#D4AF37",borderRadius:"50%",animation:"pulse 1.4s infinite"}}/>
-            🔴 LIVE NOW · 48 TEAMS · MATCHDAY 1 UNDERWAY
+            LIVE NOW · 48 TEAMS · MATCHDAY 1 UNDERWAY
           </div>
 
           <h1 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"clamp(4rem,8vw,7.5rem)",lineHeight:0.88,letterSpacing:"0.02em",marginBottom:"16px",background:"linear-gradient(150deg,#FFFFFF 0%,#E8D5A3 35%,#D4AF37 60%,#FF6B35 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
@@ -789,7 +789,7 @@ function HomePage({setActiveNav}) {
 
           <div className="hero-btns" style={{display:"flex",gap:"10px",flexWrap:"wrap",marginTop:"28px"}}>
             <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 24px",fontWeight:700,fontSize:"0.88rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
-              🔮 Lock In Your Prediction
+              Lock In Your Prediction
             </button>
             <button onClick={()=>setActiveNav("Groups")} style={{background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.65)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",padding:"13px 24px",fontWeight:500,fontSize:"0.88rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
               📋 View All Groups
@@ -1010,7 +1010,7 @@ function HomePage({setActiveNav}) {
               <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.3)",minWidth:"46px",fontWeight:500}}>{f.date}</div>
               <div style={{background:"rgba(212,175,55,0.1)",borderRadius:"4px",padding:"2px 7px",fontSize:"0.62rem",color:"#D4AF37",fontWeight:700,minWidth:"52px",textAlign:"center"}}>GRP {f.group}</div>
               <div style={{flex:1,fontWeight:600,fontSize:"0.9rem"}}>{f.teams}</div>
-              <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.35)"}}>📍 {f.city}</div>
+              <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.35)"}}>{f.city}</div>
               <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.45)",minWidth:"58px",textAlign:"right"}}>{f.time}</div>
               {f.hot&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:"4px",padding:"2px 7px",fontSize:"0.6rem",color:"#FF3B30",fontWeight:700}}>🔥 HOT</div>}
             </div>
@@ -1058,7 +1058,7 @@ function HomePage({setActiveNav}) {
           </div>
           {prediction&&(
             <div style={{background:"rgba(212,175,55,0.12)",border:"1px solid rgba(212,175,55,0.3)",borderRadius:"10px",padding:"12px 24px",fontSize:"0.88rem",color:"#D4AF37",fontWeight:600,animation:"fadeUp 0.3s ease"}}>
-              🔒 Prediction locked: {FAVORITES.find(f=>f.name===prediction)?.flag} {prediction} to win the 2026 World Cup
+              Prediction locked: {FAVORITES.find(f=>f.name===prediction)?.flag} {prediction} to win the 2026 World Cup
             </div>
           )}
           <button className="join-btn" style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 32px",fontWeight:700,fontSize:"0.92rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
@@ -1096,14 +1096,14 @@ function HomePage({setActiveNav}) {
       <section style={{padding:"40px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
           <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            <div style={{fontSize:"1.6rem",marginBottom:"12px"}}>🎙️</div>
+            
             <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan debate · 3,200+ active</div>
             <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Debate Rooms</h3>
             <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Is this Messi's last shot? Will Mbappé finally deliver? Drop your take.</p>
             <button className="join-btn" onClick={()=>setActiveNav("Debate")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"10px 20px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Enter Debate →</button>
           </div>
           <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            <div style={{fontSize:"1.6rem",marginBottom:"12px"}}>👕</div>
+            
             <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Kit culture · all 48 kits</div>
             <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Jersey Gallery</h3>
             <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Rate every kit. Fans have voted Brazil home as the best of 2026.</p>
@@ -1346,7 +1346,7 @@ function FixturesPage() {
       {nextMatch && (
         <div style={{marginBottom:"28px",background:"linear-gradient(135deg,rgba(212,175,55,0.1),rgba(255,107,53,0.06))",border:"1px solid rgba(212,175,55,0.25)",borderRadius:"16px",padding:"20px 24px",position:"relative",overflow:"hidden",animation:"scaleIn 0.5s ease 0.2s both"}}>
           <div style={{position:"absolute",right:"-10px",top:"-10px",fontSize:"7rem",opacity:0.04,pointerEvents:"none"}}>⚽</div>
-          <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"12px"}}>⚡ Next Match Up</div>
+          <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"12px"}}>Next Match Up</div>
           <div className="next-match-teams" style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",gap:"12px",marginBottom:"16px"}}>
             <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
               <span style={{fontSize:"2.2rem"}}>{nextMatch.homeTeam.flag}</span>
@@ -1369,11 +1369,11 @@ function FixturesPage() {
             </div>
           </div>
           <div style={{display:"flex",gap:"16px",flexWrap:"wrap",borderTop:"1px solid rgba(255,255,255,0.06)",paddingTop:"12px",alignItems:"center"}}>
-            <span style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.4)"}}>📍 {nextMatch.city} · {nextMatch.venue}</span>
+            <span style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.4)"}}>{nextMatch.city} · {nextMatch.venue}</span>
             <div style={{display:"flex",gap:"6px",marginLeft:"auto",flexWrap:"wrap"}}>
               {BROADCASTERS[tz].map(b=>(
                 <span key={b.name} style={{fontSize:"0.65rem",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"6px",padding:"3px 9px",color:"rgba(255,255,255,0.6)"}}>
-                  📺 {b.name} <span style={{color:"rgba(255,255,255,0.3)"}}>{b.tag}</span>
+                  {b.name} <span style={{color:"rgba(255,255,255,0.3)"}}>{b.tag}</span>
                 </span>
               ))}
             </div>
@@ -1580,13 +1580,13 @@ function MatchCard({f, isGroup, tz="ET", getScore=null}) {
 
       {/* venue + WTW footer */}
       <div style={{gridColumn:"1/-1",borderTop:"1px solid rgba(255,255,255,0.04)",paddingTop:"8px",display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
-        <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)"}}>📍 {f.city}</span>
+        <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)"}}>{f.city}</span>
         {f.venue && f.venue!=="TBD" && <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.2)"}}>{f.venue}</span>}
         {isGroup && <span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.2)"}}>MD{f.md}</span>}
         {f.confirmed && <span style={{fontSize:"0.6rem",color:"rgba(34,197,94,0.7)",fontWeight:600}}>✓</span>}
         {/* Where to Watch toggle */}
         <button onClick={e=>{e.stopPropagation();setShowWtw(v=>!v);}} style={{marginLeft:"auto",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"5px",padding:"3px 9px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"0.62rem",color:"rgba(255,255,255,0.45)",transition:"all 0.15s"}}>
-          📺 Where to Watch {showWtw?"▲":"▼"}
+          Where to Watch {showWtw?"▲":"▼"}
         </button>
       </div>
       {showWtw && (
@@ -1671,7 +1671,7 @@ function PredictionsPage() {
         <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}}>
           <div style={{width:"8px",height:"8px",borderRadius:"50%",background:locked?"#22C55E":"#FF6B35",animation:"pulseDot 1.5s ease infinite"}}/>
           <div style={{fontSize:"0.62rem",color:"#D4AF37",letterSpacing:"0.22em",textTransform:"uppercase"}}>
-            {locked ? "🔒 Predictions Locked" : "⏳ Lock In Before Jun 11 · 3PM ET"}
+            {locked ? "Predictions Locked" : "⏳ Lock In Before Jun 11 · 3PM ET"}
           </div>
         </div>
         <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
@@ -1827,7 +1827,7 @@ function PredictionsPage() {
         <div style={{position:"absolute",right:"-20px",top:"-20px",fontSize:"9rem",opacity:0.04,pointerEvents:"none"}}>🏆</div>
 
         <div style={{fontSize:"0.62rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"8px"}}>
-          {submitted?"🔒 Your Prediction Card":"📋 Your Prediction Card"}
+          {submitted?"Your Prediction Card":"📋 Your Prediction Card"}
         </div>
         <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",letterSpacing:"0.04em",marginBottom:"20px"}}>
           {submitted?"Predictions Locked In 🔥":"Review & Lock In"}
@@ -1872,7 +1872,7 @@ function PredictionsPage() {
                 fontWeight:700,fontSize:"0.92rem",cursor:canSubmit?"pointer":"default",
                 fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s",
               }}>
-              🔒 Lock In My Predictions
+              Lock In My Predictions
             </button>
             {!canSubmit && <span style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.3)"}}>Pick a champion + golden boot to lock in</span>}
           </div>
