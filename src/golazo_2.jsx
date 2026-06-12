@@ -3199,10 +3199,10 @@ function TeamDropdown({team, setTeam, inputStyle, labelStyle, selectedTeam}) {
         </button>
         {open && (
           <div style={{
-            position:"absolute", top:"calc(100% + 4px)", left:0, right:0, zIndex:9999,
+            position:"absolute", bottom:"calc(100% + 4px)", left:0, right:0, zIndex:9999,
             background:"#0d1520", border:"1px solid rgba(212,175,55,0.25)",
             borderRadius:"10px", maxHeight:"220px", overflowY:"auto",
-            boxShadow:"0 16px 48px rgba(0,0,0,0.7)",
+            boxShadow:"0 -8px 48px rgba(0,0,0,0.7)",
           }}>
             <div onClick={()=>{setTeam("");setOpen(false);}} style={{padding:"9px 14px",fontSize:"0.82rem",color:"rgba(255,255,255,0.3)",cursor:"pointer",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
               No preference
