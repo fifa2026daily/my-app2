@@ -151,7 +151,7 @@ const PLAYERS = [
   {name:"Lamine Yamal",flag:"🇪🇸",country:"Spain",position:"Winger",age:18,wcGoals:0,caps:31,accent:"#AA151B",tag:"FUTURE IS NOW",bio:"18 years old. Euro 2024 winner. Spain's hope on the left flank."},
 ];
 
-const NAV = ["Home","Groups","Fixtures","Top Scorers","Buzz","Kits","Predictions","Debate"];
+const NAV = ["Home","Groups","Fixtures","Top Scorers","Buzz",/*"Kits",*/"Predictions","Debate"];
 
 // ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 
@@ -179,7 +179,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
       <nav style={navStyle}>
         {/* LOGO */}
         <div style={{display:"flex",alignItems:"center",gap:"9px",flexShrink:0}}>
-          <img src="/golazo-logo.png" alt="Golazo" style={{width:"36px",height:"36px",objectFit:"contain",filter:"drop-shadow(0 0 8px rgba(212,175,55,0.4))",animation:"glow 3s infinite"}}/>
+          <img src="/golazo-logo.jpeg" alt="Golazo" style={{width:"40px",height:"40px",objectFit:"cover",borderRadius:"10px"}}/>
           <div>
             <div className="logo-name" style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.25rem",color:"#D4AF37",letterSpacing:"0.08em",lineHeight:1}}>GOLAZO</div>
             <div className="logo-sub" style={{fontSize:"0.5rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.2em",textTransform:"uppercase"}}>The FIFA 2026 Fan World</div>
@@ -268,7 +268,7 @@ function Footer() {
   return (
     <footer style={{borderTop:"1px solid rgba(255,255,255,0.05)",padding:"28px",marginTop:"52px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"12px"}}>
       <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
-        <img src="/golazo-logo.png" alt="Golazo" style={{width:"28px",height:"28px",objectFit:"contain",filter:"drop-shadow(0 0 6px rgba(212,175,55,0.3))"}}/>
+        <img src="/golazo-logo.jpeg" alt="Golazo" style={{width:"26px",height:"26px",objectFit:"cover",borderRadius:"6px"}}/>
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"0.9rem",color:"#D4AF37",letterSpacing:"0.08em"}}>GOLAZO</div>
       </div>
       <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game</div>
@@ -389,7 +389,7 @@ function GroupDetail({group,onBack,getScore,standings}) {
         <button onClick={onBack} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px 14px",color:"rgba(255,255,255,0.6)",cursor:"pointer",fontSize:"0.78rem",fontFamily:"'DM Sans',sans-serif"}}>← All Groups</button>
         <div>
           <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase"}}>{group.danger?"🔥 Death Group":"Group Stage"}</div>
-          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em",lineHeight:1}}>Group {group.id}</h2>
+          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em",lineHeight:1,color:"#EEE9DF"}}>Group {group.id}</h2>
         </div>
         {group.danger&&<div style={{marginLeft:"auto",background:"rgba(255,107,53,0.12)",border:"1px solid rgba(255,107,53,0.3)",borderRadius:"8px",padding:"6px 14px",fontSize:"0.7rem",color:"#FF6B35",fontWeight:700}}>🔥 DEATH GROUP</div>}
       </div>
@@ -401,8 +401,8 @@ function GroupDetail({group,onBack,getScore,standings}) {
               <div key={t.name} style={{display:"flex",alignItems:"center",gap:"12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"10px",padding:"12px 14px"}}>
                 <div style={{width:"24px",height:"24px",borderRadius:"50%",background:i<2?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.68rem",fontWeight:700,color:i<2?"#D4AF37":"rgba(255,255,255,0.3)"}}>{i+1}</div>
                 <span style={{fontSize:"1.4rem"}}>{t.flag}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontWeight:600,fontSize:"0.88rem"}}>{t.name}</div>
+                <div style={{flex:1,textAlign:"center"}}>
+                  <div style={{fontWeight:600,fontSize:"0.88rem",color:"#EEE9DF"}}>{t.name}</div>
                   <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)"}}>FIFA #{t.rank}</div>
                 </div>
                 {i===0&&<div style={{fontSize:"0.6rem",background:"rgba(212,175,55,0.12)",color:"#D4AF37",padding:"2px 6px",borderRadius:"4px",fontWeight:700}}>FAVOURITE</div>}
@@ -639,7 +639,7 @@ function GroupsPage() {
                   border:`1px solid ${g.danger?"rgba(255,107,53,0.2)":"rgba(255,255,255,0.07)"}`,
                   borderRadius:"6px",padding:"4px 10px",cursor:"pointer",
                   fontFamily:"'Bebas Neue',cursive",fontSize:"0.75rem",
-                  color:g.danger?"#FF6B35":"rgba(255,255,255,0.4)",
+                  color:g.danger?"#FF6B35":"rgba(255,255,255,0.55)",
                   transition:"all 0.15s",minWidth:"32px",textAlign:"center",
                 }}>{g.id}</button>
               ))}
@@ -788,9 +788,9 @@ function HomePage({setActiveNav}) {
 
         {/* LEFT — text */}
         <div className="hero-text" style={{position:"relative",zIndex:1,animation:"fadeUp 0.8s ease forwards"}}>
-          <div className="hero-badge" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em",flexWrap:"wrap"}}>
-            <div style={{width:"7px",height:"7px",background:"#D4AF37",borderRadius:"50%",animation:"pulse 1.4s infinite"}}/>
-            LIVE NOW · 48 TEAMS · MATCHDAY 1 UNDERWAY
+          <div className="hero-badge" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.35)",borderRadius:"20px",padding:"6px 16px",marginBottom:"28px",fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,letterSpacing:"0.1em",whiteSpace:"nowrap"}}>
+            <div style={{width:"7px",height:"7px",background:"#D4AF37",borderRadius:"50%",animation:"pulse 1.4s infinite",flexShrink:0}}/>
+            LIVE NOW · 48 TEAMS · MD1 UNDERWAY
           </div>
 
           <h1 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"clamp(4rem,8vw,7.5rem)",lineHeight:0.88,letterSpacing:"0.02em",marginBottom:"16px",background:"linear-gradient(150deg,#FFFFFF 0%,#E8D5A3 35%,#D4AF37 60%,#FF6B35 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
@@ -1467,7 +1467,7 @@ function FixturesPage() {
 
           {/* ── MATCH LIST ── */}
           {search && <div style={{marginBottom:"12px",fontSize:"0.72rem",color:"rgba(255,255,255,0.35)"}}>
-            <span style={{color:"#D4AF37",fontWeight:600}}>{visibleGroup.length}</span> match{visibleGroup.length!==1?"es":""} for <span style={{color:"#D4AF37"}}>{search}</span>
+            <span style={{color:"#D4AF37",fontWeight:600}}>{visibleGroup.length} {visibleGroup.length===1?"match":"matches"}</span>{" for "}<span style={{color:"#D4AF37"}}>{search}</span>
           </div>}
           {visibleGroup.length===0
             ? <div style={{textAlign:"center",padding:"48px",color:"rgba(255,255,255,0.3)"}}>No matches found</div>
@@ -1702,7 +1702,7 @@ function PredictionsPage() {
         <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}}>
           <div style={{width:"8px",height:"8px",borderRadius:"50%",background:locked?"#22C55E":"#FF6B35",animation:"pulseDot 1.5s ease infinite"}}/>
           <div style={{fontSize:"0.62rem",color:"#D4AF37",letterSpacing:"0.22em",textTransform:"uppercase"}}>
-            {locked ? "Predictions Locked" : "⏳ Lock In Before Jun 11 · 3PM ET"}
+            {locked ? "Predictions Locked" : "Tournament Underway · Predict Now"}
           </div>
         </div>
         <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
@@ -1979,7 +1979,7 @@ function TeamPickCard({flag,name,sub,color,pct,selected,locked,onClick,index=0})
 function GroupPickCard({group,picked,locked,onPick}) {
   const [open,setOpen]=useState(false);
   return (
-    <div style={{background:"rgba(255,255,255,0.02)",border:`1px solid ${picked?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,borderRadius:"12px",padding:"14px",transition:"all 0.2s"}}>
+    <div style={{background:"rgba(255,255,255,0.02)",border:`1px solid ${picked?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,borderRadius:"12px",padding:"14px",transition:"all 0.2s",WebkitTapHighlightColor:"transparent"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.1rem",color:"#D4AF37",letterSpacing:"0.06em"}}>Group {group.id}</div>
         {group.danger&&<span style={{fontSize:"0.55rem",color:"#FF6B35",background:"rgba(255,107,53,0.1)",padding:"2px 6px",borderRadius:"4px",fontWeight:700}}>🔥 DEATH</span>}
@@ -1993,17 +1993,17 @@ function GroupPickCard({group,picked,locked,onPick}) {
               <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.3)"}}>Your pick ✓</div>
             </div>
           </div>
-          {!locked && <button onClick={()=>setOpen(v=>!v)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:"6px",padding:"4px 9px",cursor:"pointer",color:"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.65rem"}}>Change</button>}
+          {!locked && <button onClick={e=>{e.preventDefault();setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();setOpen(v=>!v);}} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:"6px",padding:"4px 9px",cursor:"pointer",color:"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.65rem",touchAction:"manipulation"}}>Change</button>}
         </div>
       ) : (
-        <button onClick={()=>!locked&&setOpen(v=>!v)} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px dashed rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px",cursor:"pointer",color:"rgba(255,255,255,0.3)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.75rem",textAlign:"center"}}>
+        <button onClick={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px dashed rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px",cursor:"pointer",color:"rgba(255,255,255,0.3)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.75rem",textAlign:"center",touchAction:"manipulation"}}>
           + Pick Group Winner
         </button>
       )}
       {open && !locked && (
         <div style={{marginTop:"10px",display:"flex",flexDirection:"column",gap:"4px"}}>
           {group.teams.map(t=>(
-            <button key={t.name} onClick={()=>{onPick(t.name);setOpen(false);}} style={{
+            <button key={t.name} onClick={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} onTouchEnd={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} style={{
               background:picked===t.name?"rgba(212,175,55,0.1)":"rgba(255,255,255,0.025)",
               border:`1px solid ${picked===t.name?"rgba(212,175,55,0.3)":"rgba(255,255,255,0.06)"}`,
               borderRadius:"7px",padding:"8px 10px",cursor:"pointer",
@@ -3662,7 +3662,7 @@ export default function Golazo() {
       case "Fixtures":    return <FixturesPage/>;
       case "Buzz":        return <BuzzPage/>;
       case "Predictions": return <PredictionsPage/>;
-      case "Kits":        return <KitsPage/>;
+      // case "Kits": return <KitsPage/>; // temporarily disabled
       case "Debate":      return <DebatePage/>;
       case "Top Scorers": return <TopScorersPage/>;
       default:            return <HomePage setActiveNav={setActiveNav}/>;
