@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useWorldCupData } from "./useWorldCupData";
 import { savePrediction, getPredictionCounts, getMyPrediction, submitVote, getVoteCounts, getMyVote } from "./supabase";
 // Trophy image — place fifa_trophy.png inside C:\Users\HP\my-app\public\
@@ -3174,8 +3174,70 @@ function ComingSoon({page}) {
 
 // ─── EMAIL SIGNUP MODAL ───────────────────────────────────────────────────────
 
+
+function TeamDropdown({team, setTeam, inputStyle, labelStyle, selectedTeam}) {
+  const [open, setOpen] = useState(false);
+  const ref = React.useRef(null);
+  useEffect(()=>{
+    function handleClick(e){ if(ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", handleClick);
+    return ()=>document.removeEventListener("mousedown", handleClick);
+  },[]);
+  return (
+    <div ref={ref}>
+      <label style={labelStyle}>Favourite Team <span style={{color:"rgba(255,255,255,0.2)"}}>(optional)</span></label>
+      <div style={{position:"relative"}}>
+        <button type="button" onClick={()=>setOpen(v=>!v)} style={{
+          ...inputStyle, width:"100%", textAlign:"left", cursor:"pointer",
+          display:"flex", alignItems:"center", gap:"8px",
+          color: team ? "#EEE9DF" : "rgba(255,255,255,0.35)",
+          background:"rgba(255,255,255,0.04)",
+        }}>
+          {team && <span style={{fontSize:"1.1rem"}}>{selectedTeam?.flag}</span>}
+          <span style={{flex:1}}>{team || "Pick your team..."}</span>
+          <span style={{color:"rgba(255,255,255,0.3)",fontSize:"0.75rem"}}>{open?"▴":"▾"}</span>
+        </button>
+        {open && (
+          <div style={{
+            position:"absolute", top:"calc(100% + 4px)", left:0, right:0, zIndex:9999,
+            background:"#0d1520", border:"1px solid rgba(212,175,55,0.25)",
+            borderRadius:"10px", maxHeight:"220px", overflowY:"auto",
+            boxShadow:"0 16px 48px rgba(0,0,0,0.7)",
+          }}>
+            <div onClick={()=>{setTeam("");setOpen(false);}} style={{padding:"9px 14px",fontSize:"0.82rem",color:"rgba(255,255,255,0.3)",cursor:"pointer",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+              No preference
+            </div>
+            {GROUPS.map(g=>(
+              <div key={g.id}>
+                <div style={{padding:"5px 14px",fontSize:"0.55rem",color:"rgba(255,255,255,0.25)",letterSpacing:"0.15em",textTransform:"uppercase",background:"rgba(255,255,255,0.02)"}}>
+                  Group {g.id}{g.danger?" 🔥":""}
+                </div>
+                {g.teams.map(t=>(
+                  <div key={t.name} onClick={()=>{setTeam(t.name);setOpen(false);}} style={{
+                    padding:"9px 14px", display:"flex", alignItems:"center", gap:"10px",
+                    cursor:"pointer", fontSize:"0.85rem", fontWeight:team===t.name?600:400,
+                    color: team===t.name ? "#D4AF37" : "#EEE9DF",
+                    background: team===t.name ? "rgba(212,175,55,0.08)" : "transparent",
+                    transition:"background 0.15s",
+                  }}
+                  onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.05)"}
+                  onMouseLeave={e=>e.currentTarget.style.background=team===t.name?"rgba(212,175,55,0.08)":"transparent"}
+                  >
+                    <span style={{fontSize:"1.1rem"}}>{t.flag}</span>
+                    <span>{t.name}</span>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // 👉 Free setup: go to formspree.io → New Form → copy your form ID and paste it below
-const FORMSPREE_ID = "xyzabcde"; // ← replace with your real Formspree form ID
+const FORMSPREE_ID = "mojzwrwa";
 
 const ALL_TEAMS_FLAT = GROUPS.flatMap(g => g.teams.map(t => ({...t, groupId:g.id})));
 
@@ -3298,23 +3360,7 @@ function EmailModal({open, onClose}) {
                   onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.1)"}/>
               </div>
 
-              <div>
-                <label style={labelStyle}>Favourite Team <span style={{color:"rgba(255,255,255,0.2)"}}>(optional)</span></label>
-                <div style={{position:"relative"}}>
-                  {team && <span style={{position:"absolute",left:"12px",top:"50%",transform:"translateY(-50%)",fontSize:"1.1rem",pointerEvents:"none",zIndex:1}}>{selectedTeam?.flag}</span>}
-                  <select value={team} onChange={e=>setTeam(e.target.value)} style={{...inputStyle,paddingLeft:team?"40px":"14px",color:team?"#EEE9DF":"rgba(255,255,255,0.35)",appearance:"none",cursor:"pointer"}}
-                    onFocus={e=>e.target.style.borderColor="rgba(212,175,55,0.5)"}
-                    onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.1)"}>
-                    <option value="">Pick your team...</option>
-                    {GROUPS.map(g=>(
-                      <optgroup key={g.id} label={`Group ${g.id}${g.danger?" 🔥":""}`}>
-                        {g.teams.map(t=><option key={t.name} value={t.name}>{t.flag} {t.name}</option>)}
-                      </optgroup>
-                    ))}
-                  </select>
-                  <div style={{position:"absolute",right:"12px",top:"50%",transform:"translateY(-50%)",pointerEvents:"none",color:"rgba(255,255,255,0.3)",fontSize:"0.75rem"}}>▾</div>
-                </div>
-              </div>
+              <TeamDropdown team={team} setTeam={setTeam} inputStyle={inputStyle} labelStyle={labelStyle} selectedTeam={selectedTeam}/>
 
               <button type="submit" disabled={status==="submitting"} onMouseEnter={()=>setHovBtn(true)} onMouseLeave={()=>setHovBtn(false)} style={{
                 marginTop:"4px",
