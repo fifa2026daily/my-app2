@@ -9,8 +9,8 @@ const TROPHY_IMG = "/fifa_trophy.png";
 const GROUPS = [
   { id:"A", danger:false, teams:[{name:"Mexico",flag:"🇲🇽",rank:18},{name:"South Africa",flag:"🇿🇦",rank:67},{name:"Korea Republic",flag:"🇰🇷",rank:24},{name:"Czechia",flag:"🇨🇿",rank:35}],
     fixtures:[
-      {md:1,date:"Jun 11",time:"9PM ET",home:"Mexico",away:"South Africa",city:"Mexico City",venue:"Estadio Azteca",confirmed:true},
-      {md:1,date:"Jun 12",time:"3PM ET",home:"Korea Republic",away:"Czechia",city:"Atlanta",venue:"Mercedes-Benz Stadium",confirmed:true},
+      {md:1,date:"Jun 11",time:"3PM ET",home:"Mexico",away:"South Africa",city:"Mexico City",venue:"Estadio Azteca",confirmed:true},
+      {md:1,date:"Jun 11",time:"10PM ET",home:"Korea Republic",away:"Czechia",city:"Guadalajara",venue:"Estadio Akron",confirmed:true},
       {md:2,date:"Jun 17",time:"6PM ET",home:"Mexico",away:"Czechia",city:"Dallas",venue:"AT&T Stadium",confirmed:false},
       {md:2,date:"Jun 17",time:"9PM ET",home:"South Africa",away:"Korea Republic",city:"Los Angeles",venue:"SoFi Stadium",confirmed:false},
       {md:3,date:"Jun 22",time:"3PM ET",home:"Czechia",away:"South Africa",city:"Houston",venue:"NRG Stadium",confirmed:false},
@@ -118,7 +118,7 @@ const GROUPS = [
 ];
 
 const OPENING_FIXTURES = [
-  {date:"Jun 11",teams:"Mexico vs South Africa",city:"Mexico City",group:"A",hot:true,time:"9PM ET"},
+  {date:"Jun 11",teams:"Mexico vs South Africa",city:"Mexico City",group:"A",hot:true,time:"3PM ET"},
   {date:"Jun 12",teams:"Canada vs Bosnia-Herz.",city:"Toronto",group:"B",hot:false,time:"6PM ET"},
   {date:"Jun 12",teams:"USA vs Paraguay",city:"Los Angeles",group:"D",hot:true,time:"9PM ET"},
   {date:"Jun 13",teams:"Brazil vs Morocco",city:"Dallas",group:"C",hot:true,time:"6PM ET"},
@@ -151,7 +151,7 @@ const PLAYERS = [
   {name:"Lamine Yamal",flag:"🇪🇸",country:"Spain",position:"Winger",age:18,wcGoals:0,caps:31,accent:"#AA151B",tag:"FUTURE IS NOW",bio:"18 years old. Euro 2024 winner. Spain's hope on the left flank."},
 ];
 
-const NAV = ["Home","Groups","Fixtures","Buzz","Kits","Predictions","Debate"];
+const NAV = ["Home","Groups","Fixtures","Top Scorers","Buzz","Kits","Predictions","Debate"];
 
 // ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
 
@@ -189,16 +189,16 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
         {/* DESKTOP NAV */}
         <div className="nav-links" style={{display:"flex",gap:"2px"}}>
           {NAV.map(n=>{
-            const isUSP = n==="Predictions" || n==="Debate";
-            const icon  = n==="Predictions"?"🔮":n==="Debate"?"🔥":null;
+            const isUSP = n==="Predictions" || n==="Debate" || n==="Top Scorers";
+            const icon  = n==="Predictions"?"🔮":n==="Debate"?"🔥":n==="Top Scorers"?"⚽":null;
             const isActive = activeNav===n;
             if(isUSP) return (
               <button key={n} className="nav-btn" onClick={()=>setActiveNav(n)} style={{
-                background:isActive?"#D4AF37":n==="Predictions"?"rgba(212,175,55,0.12)":"rgba(255,107,53,0.12)",
-                border:`1px solid ${isActive?"#D4AF37":n==="Predictions"?"rgba(212,175,55,0.35)":"rgba(255,107,53,0.35)"}`,
+                background:isActive?"#D4AF37":n==="Predictions"||n==="Top Scorers"?"rgba(212,175,55,0.12)":"rgba(255,107,53,0.12)",
+                border:`1px solid ${isActive?"#D4AF37":n==="Predictions"||n==="Top Scorers"?"rgba(212,175,55,0.35)":"rgba(255,107,53,0.35)"}`,
                 cursor:"pointer",padding:"5px 11px",borderRadius:"20px",
                 fontSize:"0.72rem",fontWeight:700,fontFamily:"'DM Sans',sans-serif",
-                color:isActive?"#060A10":n==="Predictions"?"#D4AF37":"#FF6B35",
+                color:isActive?"#060A10":n==="Predictions"||n==="Top Scorers"?"#D4AF37":"#FF6B35",
                 transition:"all 0.2s",display:"flex",alignItems:"center",gap:"4px",
               }}>{icon}{n}</button>
             );
@@ -231,7 +231,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
         <div style={{position:"fixed",top:"60px",left:0,right:0,zIndex:99,background:"rgba(6,10,16,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(212,175,55,0.15)",padding:"8px 0 16px",animation:"fadeUp 0.2s ease both"}}>
           {NAV.map(n=>{
             const isUSP = n==="Predictions" || n==="Debate";
-            const icon  = n==="Predictions"?"🔮 ":n==="Debate"?"🔥 ":"";
+            const icon  = n==="Predictions"?"🔮 ":n==="Debate"?"🔥 ":n==="Top Scorers"?"⚽ ":"";
             const isActive = activeNav===n;
             return (
               <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
@@ -456,10 +456,146 @@ function GroupCard({group,onClick,index=0}) {
   );
 }
 
+
+// ─── GROUPS OVERVIEW ─────────────────────────────────────────────────────────
+
+function OverviewPage({standings}) {
+  // For each group, merge live standings with our GROUPS team data
+  function getGroupRows(grp) {
+    const live = standings?.[grp.id];
+    return grp.teams.map((t, i) => {
+      const row = live?.find(r => r.name.toLowerCase().includes(t.name.toLowerCase()) || t.name.toLowerCase().includes(r.name.toLowerCase().split(" ")[0]));
+      return {
+        ...t,
+        pos:    live ? (live.indexOf(row) + 1 || i + 1) : i + 1,
+        played: row?.played  ?? 0,
+        pts:    row?.points  ?? 0,
+        gd:     row?.goalDiff ?? 0,
+        gf:     row?.goalsFor ?? 0,
+        ga:     row?.goalsAgainst ?? 0,
+      };
+    }).sort((a, b) => live ? (a.pos - b.pos) : 0);
+  }
+
+  // Collect all 3rd-place teams for the best-3rd tracker
+  const thirdPlaceTeams = GROUPS.map(grp => {
+    const rows = getGroupRows(grp);
+    const t = rows[2];
+    return t ? { ...t, groupId: grp.id } : null;
+  }).filter(Boolean).sort((a, b) =>
+    b.pts - a.pts || b.gd - a.gd || b.gf - a.gf
+  );
+
+  const anyPlayed = GROUPS.some(g => (standings?.[g.id] || []).some(r => r.played > 0));
+
+  return (
+    <div style={{animation:"fadeUp 0.35s ease forwards"}}>
+
+      {/* ALL GROUPS GRID */}
+      <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:"10px", marginBottom:"32px"}}>
+        {GROUPS.map((grp, gi) => {
+          const rows = getGroupRows(grp);
+          return (
+            <div key={grp.id} style={{
+              background:"rgba(255,255,255,0.02)",
+              border:`1px solid ${grp.danger?"rgba(255,107,53,0.2)":"rgba(255,255,255,0.07)"}`,
+              borderRadius:"12px", overflow:"hidden",
+              animation:`slideUp 0.4s ease ${gi*0.04}s both`,
+            }}>
+              {/* group header */}
+              <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 14px", borderBottom:"1px solid rgba(255,255,255,0.06)", background:"rgba(255,255,255,0.01)"}}>
+                <div style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1rem", color:"#D4AF37", letterSpacing:"0.06em"}}>Group {grp.id}</div>
+                {grp.danger && <span style={{fontSize:"0.52rem", color:"#FF6B35", background:"rgba(255,107,53,0.1)", padding:"2px 6px", borderRadius:"4px", fontWeight:700}}>🔥 DEATH</span>}
+              </div>
+              {/* team rows */}
+              <table style={{width:"100%", borderCollapse:"collapse"}}>
+                <thead>
+                  <tr style={{borderBottom:"1px solid rgba(255,255,255,0.04)"}}>
+                    {["","Team","P","GD","PTS"].map(h=>(
+                      <th key={h} style={{padding:"5px 8px", fontSize:"0.52rem", color:"rgba(255,255,255,0.25)", letterSpacing:"0.12em", textAlign:h==="Team"||h===""?"left":"center", fontWeight:600}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((t, ri) => {
+                    const qualified = ri < 2 && anyPlayed && t.played > 0 && t.pts > 0;
+                    const eliminated = anyPlayed && t.played >= 2 && t.pts === 0 && t.gd < -2;
+                    return (
+                      <tr key={t.name} style={{borderBottom:ri<3?"1px solid rgba(255,255,255,0.03)":"none", background:ri<2?"rgba(212,175,55,0.02)":"transparent"}}>
+                        <td style={{padding:"8px 6px 8px 10px", width:"14px"}}>
+                          <div style={{width:"10px", height:"10px", borderRadius:"50%", background:qualified?"#22C55E":eliminated?"#FF3B30":"rgba(255,255,255,0.08)", flexShrink:0}}/>
+                        </td>
+                        <td style={{padding:"8px 6px"}}>
+                          <div style={{display:"flex", alignItems:"center", gap:"7px"}}>
+                            <span style={{fontSize:"1rem"}}>{t.flag}</span>
+                            <span style={{fontSize:"0.78rem", fontWeight:ri<2?600:400, color:ri<2?"#EEE9DF":"rgba(255,255,255,0.55)", whiteSpace:"nowrap"}}>{t.name}</span>
+                          </div>
+                        </td>
+                        <td style={{padding:"8px 6px", textAlign:"center", fontSize:"0.75rem", color:"rgba(255,255,255,0.4)"}}>{t.played}</td>
+                        <td style={{padding:"8px 6px", textAlign:"center", fontSize:"0.75rem", color:t.gd>0?"#22C55E":t.gd<0?"#FF6B35":"rgba(255,255,255,0.35)"}}>{t.gd>0?`+${t.gd}`:t.gd}</td>
+                        <td style={{padding:"8px 10px 8px 6px", textAlign:"center", fontFamily:"'Bebas Neue',cursive", fontSize:"1rem", color:"#D4AF37"}}>{t.pts}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* BEST 3RD PLACE TRACKER */}
+      <div>
+        <div style={{display:"flex", alignItems:"center", gap:"12px", marginBottom:"14px"}}>
+          <div style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1.1rem", color:"rgba(255,255,255,0.7)", letterSpacing:"0.06em"}}>Best 3rd Place</div>
+          <div style={{flex:1, height:"1px", background:"rgba(255,255,255,0.06)"}}/>
+          <div style={{fontSize:"0.62rem", color:"rgba(255,255,255,0.25)", letterSpacing:"0.1em"}}>TOP 8 ADVANCE</div>
+        </div>
+        <div style={{background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:"12px", overflow:"hidden"}}>
+          <table style={{width:"100%", borderCollapse:"collapse"}}>
+            <thead>
+              <tr style={{borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+                {["#","Team","Group","P","GF","GA","GD","PTS"].map(h=>(
+                  <th key={h} style={{padding:"9px 10px", fontSize:"0.55rem", color:"rgba(255,255,255,0.25)", letterSpacing:"0.12em", textAlign:h==="Team"?"left":"center", fontWeight:600}}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {thirdPlaceTeams.map((t, i) => (
+                <tr key={t.name} style={{borderBottom:"1px solid rgba(255,255,255,0.03)", background:i<8?"rgba(212,175,55,0.02)":"transparent"}}>
+                  <td style={{padding:"10px", textAlign:"center", fontWeight:700, fontSize:"0.75rem", color:i<8?"#D4AF37":"rgba(255,255,255,0.25)"}}>{i+1}</td>
+                  <td style={{padding:"10px 8px"}}>
+                    <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+                      <span style={{fontSize:"1.05rem"}}>{t.flag}</span>
+                      <span style={{fontSize:"0.82rem", fontWeight:i<8?600:400, color:i<8?"#EEE9DF":"rgba(255,255,255,0.5)"}}>{t.name}</span>
+                      {i<8&&<span style={{fontSize:"0.52rem", background:"rgba(212,175,55,0.12)", color:"#D4AF37", padding:"1px 5px", borderRadius:"3px", fontWeight:700}}>ADV</span>}
+                    </div>
+                  </td>
+                  <td style={{padding:"10px", textAlign:"center", fontFamily:"'Bebas Neue',cursive", fontSize:"0.85rem", color:"rgba(255,255,255,0.35)"}}>GRP {t.groupId}</td>
+                  <td style={{padding:"10px", textAlign:"center", fontSize:"0.78rem", color:"rgba(255,255,255,0.4)"}}>{t.played}</td>
+                  <td style={{padding:"10px", textAlign:"center", fontSize:"0.78rem", color:"rgba(255,255,255,0.4)"}}>{t.gf}</td>
+                  <td style={{padding:"10px", textAlign:"center", fontSize:"0.78rem", color:"rgba(255,255,255,0.4)"}}>{t.ga}</td>
+                  <td style={{padding:"10px", textAlign:"center", fontSize:"0.78rem", color:t.gd>0?"#22C55E":t.gd<0?"#FF6B35":"rgba(255,255,255,0.35)"}}>{t.gd>0?`+${t.gd}`:t.gd}</td>
+                  <td style={{padding:"10px", textAlign:"center", fontFamily:"'Bebas Neue',cursive", fontSize:"1rem", color:"#D4AF37"}}>{t.pts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{marginTop:"10px", display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap"}}>
+          <div style={{display:"flex", alignItems:"center", gap:"6px"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#22C55E"}}/><span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)"}}>Qualified / advancing</span></div>
+          <div style={{display:"flex", alignItems:"center", gap:"6px"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#FF3B30"}}/><span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)"}}>Eliminated</span></div>
+          <div style={{display:"flex", alignItems:"center", gap:"6px"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"rgba(255,255,255,0.08)"}}/><span style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)"}}>In progress</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GroupsPage() {
   const [selected,setSelected]=useState(null);
   const [filter,setFilter]=useState("all");
-  const { getScore, standings, lastUpdated, loading:apiLoading } = useWorldCupData();
+  const { getScore, standings, lastUpdated, loading:apiLoading } = useWorldCupData(GROUPS);
   const visible=filter==="danger"?GROUPS.filter(g=>g.danger):GROUPS;
   const selectedGroup=selected?GROUPS.find(g=>g.id===selected):null;
   return (
@@ -471,7 +607,7 @@ function GroupsPage() {
           <h1 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"clamp(2.4rem,6vw,4rem)",letterSpacing:"0.04em",lineHeight:1,background:"linear-gradient(120deg,#fff 0%,#E8D5A3 40%,#D4AF37 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>Group Stage</h1>
           {!selectedGroup&&(
             <div style={{display:"flex",gap:"6px"}}>
-              {[["all","All Groups"],["danger","🔥 Death Groups"]].map(([v,l])=>(
+              {[["all","All Groups"],["danger","🔥 Death Groups"],["overview","📊 Overview"]].map(([v,l])=>(
                 <button key={v} onClick={()=>setFilter(v)} style={{background:filter===v?"#D4AF37":"rgba(255,255,255,0.05)",color:filter===v?"#060A10":"rgba(255,255,255,0.5)",border:"none",borderRadius:"8px",padding:"7px 14px",fontSize:"0.75rem",fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"all 0.2s"}}>{l}</button>
               ))}
             </div>
@@ -488,16 +624,18 @@ function GroupsPage() {
               </div>
             ))}
           </div>
-          <div style={{display:"flex",gap:"4px",marginBottom:"24px",flexWrap:"wrap"}}>
+          {filter!=="overview" && <div style={{display:"flex",gap:"4px",marginBottom:"24px",flexWrap:"wrap"}}>
             {GROUPS.map(g=>(
               <button key={g.id} onClick={()=>setSelected(g.id)} style={{background:"rgba(255,255,255,0.04)",border:`1px solid ${g.danger?"rgba(255,107,53,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:"6px",padding:"5px 10px",cursor:"pointer",fontFamily:"'Bebas Neue',cursive",fontSize:"0.85rem",color:g.danger?"#FF6B35":"rgba(255,255,255,0.5)",transition:"all 0.15s"}}>{g.id}</button>
             ))}
-          </div>
+          </div>}
         </>
       )}
       {selectedGroup
         ? <GroupDetail group={selectedGroup} onBack={()=>setSelected(null)} getScore={getScore} standings={standings}/>
-        : <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(260px, 1fr))",gap:"12px"}}>{visible.map((g,i)=><GroupCard key={g.id} group={g} index={i} onClick={()=>setSelected(g.id)}/>)}</div>
+        : filter==="overview"
+          ? <OverviewPage standings={standings}/>
+          : <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(260px, 1fr))",gap:"12px"}}>{visible.map((g,i)=><GroupCard key={g.id} group={g} index={i} onClick={()=>setSelected(g.id)}/>)}</div>
       }
     </div>
   );
@@ -679,13 +817,14 @@ function HomePage({setActiveNav}) {
                     return (
                       <>
                         <div style={{fontSize:"0.6rem",color:isLive?"#FF3B30":isToday?"#FF6B35":"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>
-                          {isLive?"🔴 LIVE NOW":isFT?"✅ FULL TIME":isToday?"🔴 TODAY":"📅 NEXT"} · {!isFT&&!isLive&&`${convertTime(next.time, 9.5)} IST`}
+                          {isLive?"🔴 LIVE NOW":isFT?"✅ FULL TIME":isToday?"🔴 TODAY":"📅 NEXT"} · {!isFT&&!isLive&&`${convertTime(next.time, 9.5, next.date)} IST`}
                         </div>
                         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:"8px"}}>
                           {next.home}
-                          {sc && sc.home!==null && (
-                            <span style={{color:isLive?"#FF3B30":"#D4AF37",fontSize:"1.2rem",fontWeight:700}}> {sc.home} - {sc.away} </span>
-                          )}
+                          {sc && sc.home!==null
+                            ? <span style={{color:isLive?"#FF3B30":"#D4AF37",fontSize:"1.2rem",fontWeight:700}}> {sc.home} - {sc.away} </span>
+                            : <span style={{color:"rgba(255,255,255,0.3)",fontSize:"0.75rem",fontWeight:400,letterSpacing:"0.05em"}}> vs </span>
+                          }
                           {next.away} · {next.city}
                         </div>
                       </>
@@ -1029,7 +1168,7 @@ const BROADCASTERS = {
   AEST: [{ name:"SBS",        tag:"Free"    }, { name:"Optus Sport",tag:"Streaming"}, { name:"Paramount+", tag:"Streaming"}],
 };
 
-function convertTime(timeStr, offsetHours) {
+function convertTime(timeStr, offsetHours, dateStr = null) {
   if(offsetHours === 0) return timeStr.replace(" ET","");
   const m = timeStr.match(/(\d+)(AM|PM)/i);
   if(!m) return timeStr;
@@ -1037,16 +1176,25 @@ function convertTime(timeStr, offsetHours) {
   const ap = m[2].toUpperCase();
   if(ap==="PM" && h!==12) h+=12;
   if(ap==="AM" && h===12) h=0;
-  const totalMins = h*60 + Math.round((offsetHours%1)*60);
   let newH = Math.floor(h + offsetHours);
   let newM = Math.round((offsetHours%1)*60);
   if(newM<0){newM+=60;newH--;}
-  let dayTag="";
-  if(newH>=24){newH-=24;dayTag=" +1d";}
-  if(newH<0){newH+=24;dayTag=" -1d";}
+  let dayOffset=0;
+  if(newH>=24){newH-=24;dayOffset=1;}
+  if(newH<0){newH+=24;dayOffset=-1;}
   const newAp = newH>=12?"PM":"AM";
   const disp = newH%12||12;
   const minStr = newM>0?`:${String(newM).padStart(2,"0")}`:"";
+  let dayTag="";
+  if(dayOffset!==0){
+    if(dateStr){
+      const _mm={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+      const [mon,day]=dateStr.split(" ");
+      const shifted=new Date(2026,_mm[mon],parseInt(day)+dayOffset);
+      const _mn=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      dayTag=` (${_mn[shifted.getMonth()]} ${shifted.getDate()})`;
+    } else { dayTag=dayOffset===1?" +1d":" -1d"; }
+  }
   return `${disp}${minStr}${newAp}${dayTag}`;
 }
 
@@ -1066,7 +1214,9 @@ function getNextMatch() {
     let h=parseInt(timeNum);
     if(ampm.toUpperCase()==="PM"&&h!==12)h+=12;
     if(ampm.toUpperCase()==="AM"&&h===12)h=0;
-    return {...f, ts:new Date(year,monthMap[mon],parseInt(day),h,0,0)};
+    // Parse as ET (EDT = UTC-4) so getNextMatch() is correct for all timezones
+    const etISO=`2026-${String(monthMap[mon]+1).padStart(2,"0")}-${String(parseInt(day)).padStart(2,"0")}T${String(h).padStart(2,"0")}:00:00-04:00`;
+    return {...f, ts:new Date(etISO)};
   }).filter(f=>f.ts>now).sort((a,b)=>a.ts-b.ts);
   return parsed[0]||null;
 }
@@ -1138,6 +1288,7 @@ function FixturesPage() {
     return (months[am]*100+parseInt(ad))-(months[bm]*100+parseInt(bd));
   });
 
+  const { getScore } = useWorldCupData();
   const [stage, setStage]             = useState("group");
   const [groupFilter, setGroupFilter] = useState("ALL");
   const [dateFilter, setDateFilter]   = useState("ALL");
@@ -1206,7 +1357,7 @@ function FixturesPage() {
             </div>
             <div style={{textAlign:"center"}}>
               <NextMatchCountdown target={nextMatch.ts}/>
-              <div style={{fontSize:"0.7rem",color:"#D4AF37",fontWeight:600,marginTop:"4px"}}>{convertTime(nextMatch.time, TIMEZONES[tz].offset)} {tz}</div>
+              <div style={{fontSize:"0.7rem",color:"#D4AF37",fontWeight:600,marginTop:"4px"}}>{convertTime(nextMatch.time, TIMEZONES[tz].offset, nextMatch.date)} {tz}</div>
               <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.35)"}}>{nextMatch.date} · Grp {nextMatch.groupId}</div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:"10px",justifyContent:"flex-end"}}>
@@ -1306,7 +1457,7 @@ function FixturesPage() {
                   <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)"}}>{matches.length} match{matches.length>1?"es":""}</div>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
-                  {matches.map((f,i)=><MatchCard key={i} f={f} isGroup tz={tz}/>)}
+                  {matches.map((f,i)=><MatchCard key={i} f={f} isGroup tz={tz} getScore={getScore}/>)}
                 </div>
               </div>
             ))
@@ -1342,7 +1493,7 @@ function FixturesPage() {
           </div>
 
           <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
-            {visibleKnock.map((f,i)=><MatchCard key={i} f={f} isGroup={false} tz={tz}/>)}
+            {visibleKnock.map((f,i)=><MatchCard key={i} f={f} isGroup={false} tz={tz} getScore={getScore}/>)}
           </div>
         </>
       )}
@@ -1350,21 +1501,24 @@ function FixturesPage() {
   );
 }
 
-function MatchCard({f, isGroup, tz="ET"}) {
+function MatchCard({f, isGroup, tz="ET", getScore=null}) {
   const [hov,setHov]=useState(false);
   const [showWtw,setShowWtw]=useState(false);
   const isTBD = f.home==="TBD";
   const roundColor = ROUND_COLORS[f.round] || "rgba(255,255,255,0.3)";
-  const displayTime = convertTime(f.time, TIMEZONES[tz]?.offset||0);
+  const displayTime = convertTime(f.time, TIMEZONES[tz]?.offset||0, f.date);
   const broadcasters = BROADCASTERS[tz]||BROADCASTERS.ET;
+  const score  = (!isTBD && getScore) ? getScore(f.home, f.away) : null;
+  const isLive = score?.status==="IN_PLAY"||score?.status==="HALFTIME"||score?.status==="PAUSED";
+  const isFT   = score?.status==="FINISHED";
 
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       style={{
         display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",
         gap:"8px",padding:"16px 12px",borderRadius:"12px",
-        border:`1px solid ${hov?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,
-        background:hov?"rgba(212,175,55,0.03)":"rgba(255,255,255,0.015)",
+        border:`1px solid ${isLive?"rgba(255,59,48,0.35)":isFT?"rgba(212,175,55,0.15)":hov?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,
+        background:isLive?"rgba(255,59,48,0.04)":hov?"rgba(212,175,55,0.03)":"rgba(255,255,255,0.015)",
         transition:"all 0.2s",cursor:"pointer",position:"relative",overflow:"hidden",
       }}>
 
@@ -1396,8 +1550,21 @@ function MatchCard({f, isGroup, tz="ET"}) {
           )}
           {f.hot && <span style={{fontSize:"0.58rem",background:"rgba(255,59,48,0.12)",color:"#FF3B30",border:"1px solid rgba(255,59,48,0.25)",borderRadius:"4px",padding:"2px 6px",fontWeight:700}}>🔥 HOT</span>}
         </div>
-        <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",color:"rgba(255,255,255,0.2)",letterSpacing:"0.1em"}}>VS</div>
-        <div style={{fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,marginTop:"4px"}}>{displayTime} <span style={{fontSize:"0.58rem",opacity:0.6}}>{tz}</span></div>
+        {score && score.home!==null ? (
+          <div style={{display:"flex",alignItems:"center",gap:"10px",justifyContent:"center",margin:"4px 0"}}>
+            <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",color:isLive?"#FF3B30":"#D4AF37",lineHeight:1}}>{score.home}</span>
+            <span style={{color:"rgba(255,255,255,0.25)",fontSize:"1rem"}}>-</span>
+            <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",color:isLive?"#FF3B30":"#D4AF37",lineHeight:1}}>{score.away}</span>
+          </div>
+        ) : (
+          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",color:"rgba(255,255,255,0.2)",letterSpacing:"0.1em"}}>VS</div>
+        )}
+        {isFT
+          ? <div style={{fontSize:"0.62rem",fontWeight:700,color:"rgba(255,255,255,0.4)",letterSpacing:"0.12em",marginTop:"4px"}}>FULL TIME</div>
+          : isLive
+            ? <div style={{fontSize:"0.62rem",fontWeight:700,color:"#FF3B30",animation:"pulse 1s infinite",marginTop:"4px"}}>🔴 LIVE</div>
+            : <div style={{fontSize:"0.72rem",color:"#D4AF37",fontWeight:600,marginTop:"4px"}}>{displayTime} <span style={{fontSize:"0.58rem",opacity:0.6}}>{tz}</span></div>
+        }
         <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.25)",marginTop:"2px"}}>{f.date}</div>
       </div>
 
@@ -1504,7 +1671,7 @@ function PredictionsPage() {
         <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}}>
           <div style={{width:"8px",height:"8px",borderRadius:"50%",background:locked?"#22C55E":"#FF6B35",animation:"pulseDot 1.5s ease infinite"}}/>
           <div style={{fontSize:"0.62rem",color:"#D4AF37",letterSpacing:"0.22em",textTransform:"uppercase"}}>
-            {locked ? "🔒 Predictions Locked" : "⏳ Lock In Before Jun 11 · 9PM ET"}
+            {locked ? "🔒 Predictions Locked" : "⏳ Lock In Before Jun 11 · 3PM ET"}
           </div>
         </div>
         <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
@@ -3190,6 +3357,182 @@ function hexToRgb(hex) {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 
+
+// ─── TOP SCORERS PAGE ─────────────────────────────────────────────────────────
+
+const MEDAL = ["🥇","🥈","🥉"];
+const MEDAL_COLORS = ["#D4AF37","#C0C0C0","#CD7F32"];
+
+// Build a flag lookup from GROUPS data
+const TEAM_FLAG_MAP = Object.fromEntries(
+  GROUPS.flatMap(g => g.teams.map(t => [t.name.toLowerCase(), t.flag]))
+);
+
+function getTeamFlag(teamName) {
+  if (!teamName) return "🏳️";
+  const key = teamName.toLowerCase();
+  // direct match
+  if (TEAM_FLAG_MAP[key]) return TEAM_FLAG_MAP[key];
+  // fuzzy — find first partial match
+  const found = Object.keys(TEAM_FLAG_MAP).find(k => k.includes(key.split(" ")[0]) || key.includes(k.split(" ")[0]));
+  return found ? TEAM_FLAG_MAP[found] : "🏳️";
+}
+
+function TopScorersPage() {
+  const [scorers,    setScorers]    = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState(null);
+  const [lastUpd,    setLastUpd]    = useState(null);
+
+  useEffect(() => {
+    async function fetchScorers() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/football/competitions/WC/scorers?limit=30", {
+          headers: { "X-Auth-Token": import.meta.env.VITE_FOOTBALL_API_TOKEN },
+        });
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        const data = await res.json();
+        setScorers(data.scorers || []);
+        setLastUpd(new Date());
+      } catch(e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchScorers();
+  }, []);
+
+  const top3    = scorers.slice(0, 3);
+  const rest    = scorers.slice(3);
+  const maxGoals = scorers[0]?.goals || 1;
+
+  return (
+    <div style={{padding:"40px 28px 60px", maxWidth:"900px", margin:"0 auto"}}>
+
+      {/* HEADER */}
+      <div style={{marginBottom:"32px", animation:"slideUp 0.5s ease both"}}>
+        <div style={{fontSize:"0.62rem", color:"#D4AF37", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:"6px"}}>
+          Live · Updates every 5 min
+        </div>
+        <div style={{display:"flex", alignItems:"flex-end", justifyContent:"space-between", flexWrap:"wrap", gap:"12px"}}>
+          <h1 style={{fontFamily:"'Bebas Neue',cursive", fontSize:"clamp(2.4rem,6vw,4rem)", letterSpacing:"0.04em", lineHeight:1, background:"linear-gradient(120deg,#fff 0%,#E8D5A3 40%,#D4AF37 100%)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text"}}>
+            Golden Boot Race
+          </h1>
+          {lastUpd && <div style={{fontSize:"0.65rem", color:"rgba(255,255,255,0.25)"}}>Updated {lastUpd.toLocaleTimeString()}</div>}
+        </div>
+      </div>
+
+      {/* LOADING */}
+      {loading && (
+        <div style={{textAlign:"center", padding:"80px 0"}}>
+          <div style={{fontSize:"2.5rem", animation:"float 1.5s ease-in-out infinite"}}>⚽</div>
+          <div style={{marginTop:"16px", fontSize:"0.8rem", color:"rgba(255,255,255,0.3)", letterSpacing:"0.1em"}}>LOADING SCORERS...</div>
+        </div>
+      )}
+
+      {/* ERROR */}
+      {error && !loading && (
+        <div style={{textAlign:"center", padding:"60px 0", color:"rgba(255,255,255,0.3)"}}>
+          <div style={{fontSize:"2rem", marginBottom:"12px"}}>⚠️</div>
+          <div style={{fontSize:"0.82rem"}}>Couldn't load scorers — {error}</div>
+        </div>
+      )}
+
+      {/* NO GOALS YET */}
+      {!loading && !error && scorers.length === 0 && (
+        <div style={{textAlign:"center", padding:"80px 0"}}>
+          <div style={{fontSize:"3rem", marginBottom:"16px"}}>🥇</div>
+          <div style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1.8rem", color:"rgba(255,255,255,0.3)", letterSpacing:"0.08em"}}>No Goals Yet</div>
+          <div style={{fontSize:"0.8rem", color:"rgba(255,255,255,0.2)", marginTop:"8px"}}>Check back once matches are underway</div>
+        </div>
+      )}
+
+      {!loading && !error && scorers.length > 0 && (<>
+
+        {/* TOP 3 PODIUM */}
+        <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"12px", marginBottom:"32px"}}>
+          {top3.map((s, i) => (
+            <div key={i} style={{
+              background:`linear-gradient(135deg,rgba(${i===0?"212,175,55":i===1?"192,192,192":"205,127,50"},0.12),rgba(0,0,0,0.3))`,
+              border:`1px solid rgba(${i===0?"212,175,55":i===1?"192,192,192":"205,127,50"},0.35)`,
+              borderRadius:"16px", padding:"22px 16px", textAlign:"center",
+              animation:`slideUp 0.5s ease ${i*0.1}s both`, position:"relative", overflow:"hidden",
+            }}>
+              {/* rank medal */}
+              <div style={{fontSize:"1.8rem", marginBottom:"8px"}}>{MEDAL[i]}</div>
+              {/* flag */}
+              <div style={{fontSize:"2.2rem", marginBottom:"6px"}}>{getTeamFlag(s.team?.name)}</div>
+              {/* name */}
+              <div style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1.1rem", letterSpacing:"0.04em", lineHeight:1.1, marginBottom:"4px"}}>{s.player?.name}</div>
+              <div style={{fontSize:"0.62rem", color:"rgba(255,255,255,0.4)", marginBottom:"14px"}}>{s.team?.shortName || s.team?.name}</div>
+              {/* goals big */}
+              <div style={{fontFamily:"'Bebas Neue',cursive", fontSize:"3rem", color:MEDAL_COLORS[i], lineHeight:1}}>{s.goals}</div>
+              <div style={{fontSize:"0.58rem", color:"rgba(255,255,255,0.3)", letterSpacing:"0.15em", marginBottom:"10px"}}>GOALS</div>
+              {/* goal bar */}
+              <div style={{background:"rgba(255,255,255,0.06)", borderRadius:"3px", height:"3px", overflow:"hidden"}}>
+                <div style={{width:`${(s.goals/maxGoals)*100}%`, height:"100%", background:MEDAL_COLORS[i], borderRadius:"3px", transition:"width 1s ease"}}/>
+              </div>
+              {s.assists > 0 && (
+                <div style={{marginTop:"8px", fontSize:"0.62rem", color:"rgba(255,255,255,0.3)"}}>
+                  {s.assists} assist{s.assists>1?"s":""}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* FULL LEADERBOARD TABLE */}
+        {rest.length > 0 && (
+          <div style={{background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:"16px", overflow:"hidden"}}>
+            {/* table header */}
+            <div style={{display:"grid", gridTemplateColumns:"44px 1fr 80px 64px 64px", padding:"10px 16px", borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+              {["#","Player","Team","G","A"].map(h=>(
+                <div key={h} style={{fontSize:"0.58rem", color:"rgba(255,255,255,0.3)", letterSpacing:"0.15em", textTransform:"uppercase", textAlign:h==="Player"?"left":"center", fontWeight:600}}>{h}</div>
+              ))}
+            </div>
+            {rest.map((s, i) => {
+              const rank = i + 4;
+              const flag = getTeamFlag(s.team?.name);
+              return (
+                <div key={i} className="stat-row" style={{display:"grid", gridTemplateColumns:"44px 1fr 80px 64px 64px", padding:"13px 16px", borderBottom:"1px solid rgba(255,255,255,0.04)", alignItems:"center"}}>
+                  <div style={{fontSize:"0.75rem", color:"rgba(255,255,255,0.25)", textAlign:"center", fontWeight:600}}>{rank}</div>
+                  <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+                    <span style={{fontSize:"1.1rem"}}>{flag}</span>
+                    <div>
+                      <div style={{fontWeight:600, fontSize:"0.88rem"}}>{s.player?.name}</div>
+                      <div style={{fontSize:"0.6rem", color:"rgba(255,255,255,0.3)"}}>{s.player?.nationality}</div>
+                    </div>
+                  </div>
+                  <div style={{fontSize:"0.72rem", color:"rgba(255,255,255,0.4)", textAlign:"center"}}>{s.team?.shortName||s.team?.name}</div>
+                  <div style={{textAlign:"center"}}>
+                    <span style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1.2rem", color:"#D4AF37"}}>{s.goals}</span>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <span style={{fontSize:"0.82rem", color:"rgba(255,255,255,0.35)"}}>{s.assists||0}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* LEGEND */}
+        <div style={{marginTop:"16px", display:"flex", gap:"20px", flexWrap:"wrap"}}>
+          {[["G","Goals"],["A","Assists"]].map(([k,v])=>(
+            <div key={k} style={{display:"flex", alignItems:"center", gap:"6px"}}>
+              <div style={{width:"20px", height:"20px", borderRadius:"4px", background:"rgba(212,175,55,0.12)", border:"1px solid rgba(212,175,55,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Bebas Neue',cursive", fontSize:"0.7rem", color:"#D4AF37"}}>{k}</div>
+              <span style={{fontSize:"0.65rem", color:"rgba(255,255,255,0.3)"}}>{v}</span>
+            </div>
+          ))}
+        </div>
+
+      </>)}
+    </div>
+  );
+}
+
 export default function Golazo() {
   const [activeNav,setActiveNav]=useState("Home");
   const [scrolled,setScrolled]=useState(false);
@@ -3215,6 +3558,7 @@ export default function Golazo() {
       case "Predictions": return <PredictionsPage/>;
       case "Kits":        return <KitsPage/>;
       case "Debate":      return <DebatePage/>;
+      case "Top Scorers": return <TopScorersPage/>;
       default:            return <HomePage setActiveNav={setActiveNav}/>;
     }
   };
