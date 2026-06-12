@@ -179,7 +179,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
       <nav style={navStyle}>
         {/* LOGO */}
         <div style={{display:"flex",alignItems:"center",gap:"9px",flexShrink:0}}>
-          <div style={{width:"32px",height:"32px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px",animation:"glow 3s infinite"}}>⚽</div>
+          <img src="/golazo-logo.png" alt="Golazo" style={{width:"36px",height:"36px",objectFit:"contain",filter:"drop-shadow(0 0 8px rgba(212,175,55,0.4))",animation:"glow 3s infinite"}}/>
           <div>
             <div className="logo-name" style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.25rem",color:"#D4AF37",letterSpacing:"0.08em",lineHeight:1}}>GOLAZO</div>
             <div className="logo-sub" style={{fontSize:"0.5rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.2em",textTransform:"uppercase"}}>The FIFA 2026 Fan World</div>
@@ -218,7 +218,7 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
         <div style={{display:"flex",alignItems:"center",gap:"8px",flexShrink:0}}>
           <button className="join-btn desktop-only" onClick={onJoin} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"8px 18px",fontWeight:700,fontSize:"0.78rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Join the Fan World</button>
           {/* Mobile join */}
-          <button className="mobile-join-btn" onClick={onJoin} style={{display:"none",background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"7px 12px",fontWeight:700,fontSize:"0.72rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",whiteSpace:"nowrap"}}>Join ⚽</button>
+          <button className="mobile-join-btn" onClick={onJoin} style={{display:"none",background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"7px 12px",fontWeight:700,fontSize:"0.72rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",whiteSpace:"nowrap"}}>Join the Fan World</button>
           {/* Hamburger */}
           <button className="hamburger-btn" onClick={()=>setMobileOpen(v=>!v)} style={{display:"none",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"7px 10px",color:"#D4AF37",cursor:"pointer",fontSize:"1rem",lineHeight:1}}>
             {mobileOpen?"✕":"☰"}
@@ -234,22 +234,28 @@ function NavBar({activeNav,setActiveNav,scrolled,onJoin}) {
             const icon  = n==="Debate"?"🔥 ":"";
             const isActive = activeNav===n;
             return (
-              <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
+            <button key={n} onClick={()=>{setActiveNav(n);setMobileOpen(false);}} style={{
                 display:"block",width:"100%",cursor:"pointer",
                 padding:"14px 24px",textAlign:"left",
                 fontFamily:"'DM Sans',sans-serif",fontSize:"1rem",
-                fontWeight:isUSP?700:500,
-                color:isActive?"#D4AF37":isUSP?(n==="Predictions"?"#D4AF37":"#FF6B35"):"rgba(255,255,255,0.65)",
-                background:isUSP&&!isActive?(n==="Predictions"?"rgba(212,175,55,0.05)":"rgba(255,107,53,0.05)"):"none",
+                fontWeight:isActive?700:500,
+                color:isActive?"#060A10":"rgba(255,255,255,0.65)",
+                background:isActive
+                  ? "linear-gradient(90deg,#D4AF37 0%,#E8C44A 60%,#C9A227 100%)"
+                  : "none",
                 border:"none",
-                borderLeft:isActive?"3px solid #D4AF37":isUSP?(n==="Predictions"?"3px solid rgba(212,175,55,0.4)":"3px solid rgba(255,107,53,0.4)"):"3px solid transparent",
-                transition:"all 0.15s",
+                borderLeft:"none",
+                borderRadius:isActive?"0 10px 10px 0":"0",
+                marginRight:isActive?"16px":"0",
+                boxShadow:isActive?"0 4px 20px rgba(212,175,55,0.35), inset 0 1px 0 rgba(255,255,255,0.25)":"none",
+                letterSpacing:isActive?"0.02em":"normal",
+                transition:"all 0.2s",
               }}>{icon}{n}</button>
             );
           })}
           <div style={{margin:"8px 24px 0",paddingTop:"12px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
             <button onClick={()=>{onJoin();setMobileOpen(false);}} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"12px 24px",fontWeight:700,fontSize:"0.9rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",width:"100%"}}>
-              🔥 Join The Fan World
+              Join The Fan World
             </button>
           </div>
         </div>
@@ -262,7 +268,7 @@ function Footer() {
   return (
     <footer style={{borderTop:"1px solid rgba(255,255,255,0.05)",padding:"28px",marginTop:"52px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"12px"}}>
       <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
-        <div style={{width:"26px",height:"26px",background:"linear-gradient(135deg,#D4AF37,#FF6B35)",borderRadius:"6px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px"}}>⚽</div>
+        <img src="/golazo-logo.png" alt="Golazo" style={{width:"28px",height:"28px",objectFit:"contain",filter:"drop-shadow(0 0 6px rgba(212,175,55,0.3))"}}/>
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"0.9rem",color:"#D4AF37",letterSpacing:"0.08em"}}>GOLAZO</div>
       </div>
       <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game</div>
@@ -302,30 +308,30 @@ function StandingsTable({teams, liveStandings}) {
         <thead>
           <tr style={{borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
             {["#","Team","P","W","D","L","GF","GA","GD","Pts"].map(h=>(
-              <th key={h} style={{padding:"8px 10px",textAlign:h==="Team"?"left":"center",fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.12em",textTransform:"uppercase",fontWeight:600}}>{h}</th>
+              <th key={h} style={{padding:"8px 6px",textAlign:h==="Team"?"left":"center",fontSize:"0.58rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.1em",textTransform:"uppercase",fontWeight:600,whiteSpace:"nowrap"}}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((t,i)=>(
             <tr key={t.name} style={{borderBottom:"1px solid rgba(255,255,255,0.04)",background:i<2?"rgba(212,175,55,0.03)":"transparent"}}>
-              <td style={{padding:"11px 10px",textAlign:"center",color:i<2?"#D4AF37":"rgba(255,255,255,0.3)",fontWeight:700,fontSize:"0.75rem"}}>{i+1}</td>
-              <td style={{padding:"11px 10px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
-                  <span style={{fontSize:"1.1rem"}}>{t.flag}</span>
-                  <span style={{fontWeight:i<2?600:400,color:i<2?"#EEE9DF":"rgba(255,255,255,0.7)"}}>{t.name}</span>
+              <td style={{padding:"11px 6px",textAlign:"center",color:i<2?"#D4AF37":"rgba(255,255,255,0.3)",fontWeight:700,fontSize:"0.75rem"}}>{i+1}</td>
+              <td style={{padding:"11px 6px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:"6px"}}>
+                  <span style={{fontSize:"1rem",flexShrink:0}}>{t.flag}</span>
+                  <span style={{fontWeight:i<2?600:400,color:i<2?"#EEE9DF":"rgba(255,255,255,0.7)",fontSize:"0.8rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",maxWidth:"80px"}}>{t.name}</span>
                   {hasStarted&&i<2&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"3px",padding:"1px 5px",fontWeight:700}}>QUALIFY</span>}
                   {!hasStarted&&i<2&&<span style={{fontSize:"0.55rem",background:"rgba(212,175,55,0.15)",color:"#D4AF37",borderRadius:"3px",padding:"1px 5px",fontWeight:700}}>{i===0?"SEED 1":"SEED 2"}</span>}
                 </div>
               </td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.played}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.won}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.draw}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.lost}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.gf}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.ga}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:t.gd>0?"#22C55E":t.gd<0?"#FF6B35":"rgba(255,255,255,0.45)"}}>{t.gd>0?`+${t.gd}`:t.gd}</td>
-              <td style={{padding:"11px 10px",textAlign:"center",color:"#D4AF37",fontWeight:700,fontFamily:"'Bebas Neue',cursive",fontSize:"0.95rem"}}>{t.pts}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.played}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.won}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.draw}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.lost}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.gf}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"rgba(255,255,255,0.45)"}}>{t.ga}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:t.gd>0?"#22C55E":t.gd<0?"#FF6B35":"rgba(255,255,255,0.45)"}}>{t.gd>0?`+${t.gd}`:t.gd}</td>
+              <td style={{padding:"11px 6px",textAlign:"center",color:"#D4AF37",fontWeight:700,fontFamily:"'Bebas Neue',cursive",fontSize:"0.95rem"}}>{t.pts}</td>
             </tr>
           ))}
         </tbody>
@@ -387,7 +393,7 @@ function GroupDetail({group,onBack,getScore,standings}) {
         </div>
         {group.danger&&<div style={{marginLeft:"auto",background:"rgba(255,107,53,0.12)",border:"1px solid rgba(255,107,53,0.3)",borderRadius:"8px",padding:"6px 14px",fontSize:"0.7rem",color:"#FF6B35",fontWeight:700}}>🔥 DEATH GROUP</div>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px",marginBottom:"28px"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:"16px",marginBottom:"28px"}}>
         <div>
           <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:"12px"}}>Teams</div>
           <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
@@ -616,19 +622,29 @@ function GroupsPage() {
       </div>
       {!selectedGroup&&(
         <>
-          <div style={{display:"flex",gap:"24px",marginBottom:"24px",flexWrap:"wrap",background:"rgba(212,175,55,0.04)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:"12px",padding:"16px 20px"}}>
-            {[["12","Groups"],["48","Nations"],["5","Death Groups"],["104","Total Matches"],["Jun 11","Kick Off"],["Jul 19","Final"]].map(([v,l],i)=>(
-              <div key={l} style={{textAlign:"center",animation:`slideUp 0.4s ease ${0.15+i*0.08}s both`}}>
+          <div style={{display:"flex",gap:"20px",marginBottom:"24px",flexWrap:"wrap"}}>
+            {[["12","Groups"],["48","Nations"],["5","Death Groups"],["104","Matches"],["Jun 11","Kick-Off"],["Jul 19","Final"]].map(([v,l],i)=>(
+              <div key={l} style={{textAlign:"center",animation:`slideUp 0.4s ease ${0.1+i*0.07}s both`}}>
                 <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.4rem",color:"#D4AF37",lineHeight:1}}>{v}</div>
                 <div style={{fontSize:"0.58rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.12em",textTransform:"uppercase",marginTop:"2px"}}>{l}</div>
               </div>
             ))}
           </div>
-          {filter!=="overview" && <div style={{display:"flex",gap:"4px",marginBottom:"24px",flexWrap:"wrap"}}>
-            {GROUPS.map(g=>(
-              <button key={g.id} onClick={()=>setSelected(g.id)} style={{background:"rgba(255,255,255,0.04)",border:`1px solid ${g.danger?"rgba(255,107,53,0.25)":"rgba(255,255,255,0.08)"}`,borderRadius:"6px",padding:"5px 10px",cursor:"pointer",fontFamily:"'Bebas Neue',cursive",fontSize:"0.85rem",color:g.danger?"#FF6B35":"rgba(255,255,255,0.5)",transition:"all 0.15s"}}>{g.id}</button>
-            ))}
-          </div>}
+
+          {filter!=="overview" && (
+            <div style={{display:"flex",gap:"4px",marginBottom:"20px",flexWrap:"wrap"}}>
+              {GROUPS.map(g=>(
+                <button key={g.id} onClick={()=>setSelected(g.id)} style={{
+                  background:"rgba(255,255,255,0.04)",
+                  border:`1px solid ${g.danger?"rgba(255,107,53,0.2)":"rgba(255,255,255,0.07)"}`,
+                  borderRadius:"6px",padding:"4px 10px",cursor:"pointer",
+                  fontFamily:"'Bebas Neue',cursive",fontSize:"0.75rem",
+                  color:g.danger?"#FF6B35":"rgba(255,255,255,0.4)",
+                  transition:"all 0.15s",minWidth:"32px",textAlign:"center",
+                }}>{g.id}</button>
+              ))}
+            </div>
+          )}
         </>
       )}
       {selectedGroup
@@ -1006,13 +1022,14 @@ function HomePage({setActiveNav}) {
         <div style={{display:"flex",flexDirection:"column",gap:"4px"}}>
           {OPENING_FIXTURES.map((f,i)=>(
             <div key={i} className="fix-row" onMouseEnter={()=>setHovFix(i)} onMouseLeave={()=>setHovFix(null)}
-              style={{display:"flex",alignItems:"center",gap:"12px",padding:"14px 18px",borderRadius:"10px",border:"1px solid",cursor:"pointer",borderColor:hovFix===i?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)",background:hovFix===i?"rgba(212,175,55,0.04)":"transparent",transition:"all 0.2s"}}>
-              <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.3)",minWidth:"46px",fontWeight:500}}>{f.date}</div>
-              <div style={{background:"rgba(212,175,55,0.1)",borderRadius:"4px",padding:"2px 7px",fontSize:"0.62rem",color:"#D4AF37",fontWeight:700,minWidth:"52px",textAlign:"center"}}>GRP {f.group}</div>
-              <div style={{flex:1,fontWeight:600,fontSize:"0.9rem"}}>{f.teams}</div>
-              <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.35)"}}>{f.city}</div>
-              <div style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.45)",minWidth:"58px",textAlign:"right"}}>{f.time}</div>
-              {f.hot&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:"4px",padding:"2px 7px",fontSize:"0.6rem",color:"#FF3B30",fontWeight:700}}>🔥 HOT</div>}
+              style={{display:"grid",gridTemplateColumns:"auto auto 1fr auto",alignItems:"center",gap:"8px",padding:"12px 14px",borderRadius:"10px",border:"1px solid",cursor:"pointer",borderColor:hovFix===i?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)",background:hovFix===i?"rgba(212,175,55,0.04)":"transparent",transition:"all 0.2s"}}>
+              <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.3)",fontWeight:500,whiteSpace:"nowrap"}}>{f.date}</div>
+              <div style={{background:"rgba(212,175,55,0.1)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.6rem",color:"#D4AF37",fontWeight:700,whiteSpace:"nowrap"}}>GRP {f.group}</div>
+              <div style={{fontWeight:600,fontSize:"0.85rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{f.teams}</div>
+              <div style={{display:"flex",alignItems:"center",gap:"6px",justifyContent:"flex-end"}}>
+                <span style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.45)",whiteSpace:"nowrap"}}>{f.time}</span>
+                {f.hot&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.58rem",color:"#FF3B30",fontWeight:700,whiteSpace:"nowrap"}}>HOT</div>}
+              </div>
             </div>
           ))}
         </div>
@@ -1324,11 +1341,18 @@ function FixturesPage() {
         <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
           <h1 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"clamp(2.4rem,6vw,4rem)",letterSpacing:"0.04em",lineHeight:1,background:"linear-gradient(120deg,#fff 0%,#E8D5A3 40%,#D4AF37 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>Full Schedule</h1>
           {/* search */}
-          <input
-            placeholder="Search team..."
-            value={search} onChange={e=>setSearch(e.target.value)}
-            style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px 14px",color:"#EEE9DF",fontSize:"0.8rem",fontFamily:"'DM Sans',sans-serif",outline:"none",width:"180px"}}
-          />
+          <div style={{position:"relative",display:"flex",alignItems:"center"}}>
+            <input
+              placeholder="Search team..."
+              value={search}
+              onChange={e=>{setSearch(e.target.value);if(e.target.value)setStage("group");}}
+              style={{background:"rgba(255,255,255,0.05)",border:`1px solid ${search?"rgba(212,175,55,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:"8px",padding:"8px 36px 8px 14px",color:"#EEE9DF",fontSize:"0.8rem",fontFamily:"'DM Sans',sans-serif",outline:"none",width:"180px",transition:"border-color 0.2s"}}
+            />
+            {search
+              ? <button onClick={()=>setSearch("")} style={{position:"absolute",right:"8px",background:"none",border:"none",color:"rgba(255,255,255,0.4)",cursor:"pointer",fontSize:"0.9rem",lineHeight:1,padding:"2px"}}>✕</button>
+              : <span style={{position:"absolute",right:"10px",color:"rgba(255,255,255,0.2)",fontSize:"0.8rem",pointerEvents:"none"}}>⌕</span>
+            }
+          </div>
         </div>
       </div>
 
@@ -1398,7 +1422,7 @@ function FixturesPage() {
 
       {/* ── STAGE TOGGLE ── */}
       <div style={{display:"flex",gap:"6px",marginBottom:"20px"}}>
-        {[["group","⚽ Group Stage"],["knockout","🏆 Knockout Rounds"]].map(([v,l])=>(
+        {[["group","Group Stage"],["knockout","Knockout Rounds"]].map(([v,l])=>(
           <button key={v} onClick={()=>{setStage(v);setGroupFilter("ALL");setDateFilter("ALL");}} style={{
             background:stage===v?"#D4AF37":"rgba(255,255,255,0.05)",
             color:stage===v?"#060A10":"rgba(255,255,255,0.5)",
@@ -1442,12 +1466,15 @@ function FixturesPage() {
           )}
 
           {/* ── MATCH LIST ── */}
+          {search && <div style={{marginBottom:"12px",fontSize:"0.72rem",color:"rgba(255,255,255,0.35)"}}>
+            <span style={{color:"#D4AF37",fontWeight:600}}>{visibleGroup.length}</span> match{visibleGroup.length!==1?"es":""} for <span style={{color:"#D4AF37"}}>{search}</span>
+          </div>}
           {visibleGroup.length===0
             ? <div style={{textAlign:"center",padding:"48px",color:"rgba(255,255,255,0.3)"}}>No matches found</div>
-            : Object.entries(byDate).sort(([a],[b])=>{
-                const months={Jun:6,Jul:7};
+            : Object.entries(byDate).filter(([d])=>d&&d.includes(" ")).sort(([a],[b])=>{
+                const months={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7};
                 const [am,ad]=a.split(" ");const [bm,bd]=b.split(" ");
-                return (months[am]*100+parseInt(ad))-(months[bm]*100+parseInt(bd));
+                return ((months[am]||0)*100+parseInt(ad||0))-((months[bm]||0)*100+parseInt(bd||0));
               }).map(([date,matches])=>(
               <div key={date} style={{marginBottom:"28px"}}>
                 {/* date header */}
@@ -1516,7 +1543,7 @@ function MatchCard({f, isGroup, tz="ET", getScore=null}) {
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       style={{
         display:"grid",gridTemplateColumns:"1fr auto 1fr",alignItems:"center",
-        gap:"8px",padding:"16px 12px",borderRadius:"12px",
+        gap:"4px",padding:"12px 10px",borderRadius:"12px",
         border:`1px solid ${isLive?"rgba(255,59,48,0.35)":isFT?"rgba(212,175,55,0.15)":hov?"rgba(212,175,55,0.25)":"rgba(255,255,255,0.07)"}`,
         background:isLive?"rgba(255,59,48,0.04)":hov?"rgba(212,175,55,0.03)":"rgba(255,255,255,0.015)",
         transition:"all 0.2s",cursor:"pointer",position:"relative",overflow:"hidden",
@@ -1526,17 +1553,19 @@ function MatchCard({f, isGroup, tz="ET", getScore=null}) {
       {f.hot && <div style={{position:"absolute",left:0,top:0,bottom:0,width:"3px",background:"linear-gradient(180deg,#FF6B35,#D4AF37)"}}/>}
 
       {/* HOME TEAM */}
-      <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-        {isGroup && f.homeTeam && <span style={{fontSize:"1.4rem"}}>{f.homeTeam.flag}</span>}
-        {!isGroup && <div style={{width:"32px",height:"32px",borderRadius:"50%",background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.7rem",color:"rgba(255,255,255,0.3)",fontWeight:700}}>?</div>}
-        <div>
-          <div style={{fontWeight:600,fontSize:"0.92rem",color:isTBD?"rgba(255,255,255,0.3)":"#EEE9DF"}}>{f.home}</div>
-          {isGroup && f.homeTeam && <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.25)"}}>FIFA #{f.homeTeam.rank}</div>}
+      <div style={{display:"flex",alignItems:"center",gap:"6px",minWidth:0}}>
+        {isGroup && f.homeTeam && <span style={{fontSize:"1.2rem",flexShrink:0}}>{f.homeTeam.flag}</span>}
+        {!isGroup && <div style={{width:"28px",height:"28px",flexShrink:0,borderRadius:"50%",background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.65rem",color:"rgba(255,255,255,0.3)",fontWeight:700}}>?</div>}
+        <div style={{minWidth:0}}>
+          <div style={{display:"flex",alignItems:"baseline",gap:"5px",overflow:"hidden"}}>
+            <span style={{fontWeight:600,fontSize:"0.82rem",color:isTBD?"rgba(255,255,255,0.3)":"#EEE9DF",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{f.home}</span>
+            {isGroup && f.homeTeam && <span style={{fontSize:"0.58rem",color:"rgba(255,255,255,0.22)",flexShrink:0}}>#{f.homeTeam.rank}</span>}
+          </div>
         </div>
       </div>
 
       {/* CENTER — time + badges */}
-      <div style={{textAlign:"center",minWidth:"120px"}}>
+      <div style={{textAlign:"center",minWidth:"80px",flexShrink:0}}>
         <div style={{display:"flex",gap:"4px",justifyContent:"center",marginBottom:"6px",flexWrap:"wrap"}}>
           {isGroup && (
             <span style={{fontSize:"0.58rem",background:f.danger?"rgba(255,107,53,0.12)":"rgba(212,175,55,0.1)",color:f.danger?"#FF6B35":"#D4AF37",border:`1px solid ${f.danger?"rgba(255,107,53,0.25)":"rgba(212,175,55,0.2)"}`,borderRadius:"4px",padding:"2px 6px",fontWeight:700,letterSpacing:"0.08em"}}>
@@ -1569,13 +1598,15 @@ function MatchCard({f, isGroup, tz="ET", getScore=null}) {
       </div>
 
       {/* AWAY TEAM */}
-      <div style={{display:"flex",alignItems:"center",gap:"10px",justifyContent:"flex-end",textAlign:"right"}}>
-        <div>
-          <div style={{fontWeight:600,fontSize:"0.92rem",color:isTBD?"rgba(255,255,255,0.3)":"#EEE9DF"}}>{f.away}</div>
-          {isGroup && f.awayTeam && <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.25)"}}>FIFA #{f.awayTeam.rank}</div>}
+      <div style={{display:"flex",alignItems:"center",gap:"6px",justifyContent:"flex-end",textAlign:"right",minWidth:0}}>
+        <div style={{minWidth:0}}>
+          <div style={{display:"flex",alignItems:"baseline",gap:"5px",justifyContent:"flex-end",overflow:"hidden"}}>
+            {isGroup && f.awayTeam && <span style={{fontSize:"0.58rem",color:"rgba(255,255,255,0.22)",flexShrink:0}}>#{f.awayTeam.rank}</span>}
+            <span style={{fontWeight:600,fontSize:"0.82rem",color:isTBD?"rgba(255,255,255,0.3)":"#EEE9DF",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{f.away}</span>
+          </div>
         </div>
-        {isGroup && f.awayTeam && <span style={{fontSize:"1.4rem"}}>{f.awayTeam.flag}</span>}
-        {!isGroup && <div style={{width:"32px",height:"32px",borderRadius:"50%",background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.7rem",color:"rgba(255,255,255,0.3)",fontWeight:700}}>?</div>}
+        {isGroup && f.awayTeam && <span style={{fontSize:"1.2rem",flexShrink:0}}>{f.awayTeam.flag}</span>}
+        {!isGroup && <div style={{width:"28px",height:"28px",flexShrink:0,borderRadius:"50%",background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.65rem",color:"rgba(255,255,255,0.3)",fontWeight:700}}>?</div>}
       </div>
 
       {/* venue + WTW footer */}
@@ -2409,54 +2440,54 @@ const TEAM_CREST = {
 };
 
 const KIT_DATA = {
-  "Mexico":        {home:{p:"#006847",s:"#CE1126",c:"#FFFFFF",style:"solid"},  away:{p:"#FFFFFF",s:"#006847",c:"#CE1126",style:"solid"},  rating:4.5,votes:3241},
-  "South Africa":  {home:{p:"#007A4D",s:"#FFB81C",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFB81C",c:"#007A4D",style:"solid"},  rating:3.9,votes:891},
-  "Korea Republic":{home:{p:"#C60C30",s:"#003478",c:"#FFFFFF",style:"solid"},  away:{p:"#003478",s:"#C60C30",c:"#FFFFFF",style:"solid"},  rating:4.0,votes:1204},
-  "Czechia":       {home:{p:"#D7141A",s:"#FFFFFF",c:"#D7141A",style:"hoops"},  away:{p:"#FFFFFF",s:"#D7141A",c:"#D7141A",style:"solid"},  rating:3.5,votes:672},
-  "Canada":        {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"solid"},  away:{p:"#000000",s:"#FF0000",c:"#FF0000",style:"solid"},  rating:4.1,votes:1872},
-  "Bosnia-Herz.":  {home:{p:"#003DA5",s:"#FFD700",c:"#003DA5",style:"sash"},   away:{p:"#FFFFFF",s:"#003DA5",c:"#003DA5",style:"solid"},  rating:3.7,votes:544},
-  "Qatar":         {home:{p:"#8D1B3D",s:"#FFFFFF",c:"#8D1B3D",style:"solid"},  away:{p:"#FFFFFF",s:"#8D1B3D",c:"#8D1B3D",style:"solid"},  rating:3.2,votes:421},
-  "Switzerland":   {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"solid"},  away:{p:"#FFFFFF",s:"#FF0000",c:"#FF0000",style:"solid"},  rating:3.8,votes:788},
-  "Brazil":        {home:{p:"#009C3B",s:"#FFDF00",c:"#003087",style:"solid"},  away:{p:"#003087",s:"#FFDF00",c:"#009C3B",style:"solid"},  rating:4.9,votes:8821},
-  "Morocco":       {home:{p:"#C1272D",s:"#006233",c:"#C1272D",style:"solid"},  away:{p:"#006233",s:"#C1272D",c:"#006233",style:"solid"},  rating:4.3,votes:2341},
-  "Haiti":         {home:{p:"#00209F",s:"#D21034",c:"#FFFFFF",style:"solid"},  away:{p:"#FFFFFF",s:"#00209F",c:"#D21034",style:"solid"},  rating:3.4,votes:312},
-  "Scotland":      {home:{p:"#003A8C",s:"#FFFFFF",c:"#003A8C",style:"solid"},  away:{p:"#FFFFFF",s:"#003A8C",c:"#003A8C",style:"solid"},  rating:3.9,votes:1102},
-  "USA":           {home:{p:"#002868",s:"#FFFFFF",c:"#BF0A30",style:"solid"},  away:{p:"#FFFFFF",s:"#002868",c:"#BF0A30",style:"solid"},  rating:4.0,votes:3910},
-  "Paraguay":      {home:{p:"#D52B1E",s:"#FFFFFF",c:"#0038A8",style:"stripes"},away:{p:"#FFFFFF",s:"#D52B1E",c:"#0038A8",style:"solid"},  rating:3.6,votes:521},
-  "Australia":     {home:{p:"#FFD200",s:"#00843D",c:"#003082",style:"solid"},  away:{p:"#003082",s:"#FFD200",c:"#00843D",style:"solid"},  rating:4.0,votes:1231},
-  "Türkiye":       {home:{p:"#E30A17",s:"#FFFFFF",c:"#E30A17",style:"solid"},  away:{p:"#FFFFFF",s:"#E30A17",c:"#E30A17",style:"solid"},  rating:3.8,votes:987},
-  "Germany":       {home:{p:"#FFFFFF",s:"#000000",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFFFFF",c:"#FFFFFF",style:"solid"},  rating:4.1,votes:3102},
-  "Curaçao":       {home:{p:"#002B7F",s:"#F9E814",c:"#009FC3",style:"solid"},  away:{p:"#009FC3",s:"#002B7F",c:"#F9E814",style:"solid"},  rating:3.5,votes:287},
-  "Côte d'Ivoire": {home:{p:"#F77F00",s:"#009A44",c:"#FFFFFF",style:"stripes"},away:{p:"#009A44",s:"#F77F00",c:"#FFFFFF",style:"solid"},  rating:3.9,votes:712},
-  "Ecuador":       {home:{p:"#FFD100",s:"#034EA2",c:"#CE1126",style:"solid"},  away:{p:"#034EA2",s:"#FFD100",c:"#CE1126",style:"solid"},  rating:3.7,votes:634},
-  "Netherlands":   {home:{p:"#FF6600",s:"#FFFFFF",c:"#FF6600",style:"solid"},  away:{p:"#003DA5",s:"#FF6600",c:"#FF6600",style:"solid"},  rating:4.4,votes:2987},
-  "Japan":         {home:{p:"#1A3567",s:"#FFFFFF",c:"#BC002D",style:"solid"},  away:{p:"#FFFFFF",s:"#1A3567",c:"#BC002D",style:"solid"},  rating:4.2,votes:2341},
-  "Sweden":        {home:{p:"#006AA7",s:"#FECC02",c:"#006AA7",style:"solid"},  away:{p:"#FECC02",s:"#006AA7",c:"#006AA7",style:"solid"},  rating:4.1,votes:1231},
-  "Tunisia":       {home:{p:"#E70013",s:"#FFFFFF",c:"#E70013",style:"solid"},  away:{p:"#FFFFFF",s:"#E70013",c:"#E70013",style:"solid"},  rating:3.5,votes:498},
-  "Belgium":       {home:{p:"#ED2939",s:"#000000",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFD700",c:"#ED2939",style:"solid"},  rating:4.2,votes:2109},
-  "Egypt":         {home:{p:"#CE1126",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#FFFFFF",s:"#CE1126",c:"#000000",style:"solid"},  rating:3.8,votes:876},
-  "Iran":          {home:{p:"#239F40",s:"#FFFFFF",c:"#DA0000",style:"solid"},  away:{p:"#FFFFFF",s:"#239F40",c:"#DA0000",style:"solid"},  rating:3.6,votes:543},
-  "New Zealand":   {home:{p:"#000000",s:"#FFFFFF",c:"#CC0000",style:"solid"},  away:{p:"#FFFFFF",s:"#000000",c:"#CC0000",style:"solid"},  rating:3.7,votes:412},
-  "Spain":         {home:{p:"#AA151B",s:"#F1BF00",c:"#AA151B",style:"solid"},  away:{p:"#003DA5",s:"#AA151B",c:"#AA151B",style:"solid"},  rating:4.5,votes:4102},
-  "Cape Verde":    {home:{p:"#003893",s:"#CF2027",c:"#FFFFFF",style:"stripes"},away:{p:"#CF2027",s:"#003893",c:"#FFFFFF",style:"solid"},  rating:3.8,votes:389},
-  "Saudi Arabia":  {home:{p:"#007A3D",s:"#FFFFFF",c:"#007A3D",style:"solid"},  away:{p:"#FFFFFF",s:"#007A3D",c:"#007A3D",style:"solid"},  rating:3.5,votes:701},
-  "Uruguay":       {home:{p:"#5EB6E4",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#5EB6E4",c:"#5EB6E4",style:"solid"},  rating:4.0,votes:1092},
-  "France":        {home:{p:"#003189",s:"#FFFFFF",c:"#CF142B",style:"solid"},  away:{p:"#FFFFFF",s:"#003189",c:"#CF142B",style:"solid"},  rating:4.7,votes:6201},
-  "Senegal":       {home:{p:"#00853F",s:"#FDEF42",c:"#E31B23",style:"solid"},  away:{p:"#FFFFFF",s:"#00853F",c:"#E31B23",style:"solid"},  rating:4.1,votes:1432},
-  "Iraq":          {home:{p:"#CE1126",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#CE1126",c:"#FFFFFF",style:"solid"},  rating:3.4,votes:298},
-  "Norway":        {home:{p:"#EF3340",s:"#002868",c:"#FFFFFF",style:"stripes"},away:{p:"#002868",s:"#EF3340",c:"#FFFFFF",style:"solid"},  rating:4.0,votes:1341},
-  "Argentina":     {home:{p:"#75AADB",s:"#FFFFFF",c:"#75AADB",style:"stripes"},away:{p:"#FFFFFF",s:"#75AADB",c:"#000000",style:"solid"},  rating:4.8,votes:7821},
-  "Algeria":       {home:{p:"#FFFFFF",s:"#D21034",c:"#006233",style:"solid"},  away:{p:"#D21034",s:"#FFFFFF",c:"#006233",style:"solid"},  rating:3.9,votes:891},
-  "Austria":       {home:{p:"#ED2939",s:"#FFFFFF",c:"#ED2939",style:"solid"},  away:{p:"#FFFFFF",s:"#ED2939",c:"#ED2939",style:"solid"},  rating:3.7,votes:612},
-  "Jordan":        {home:{p:"#007A3D",s:"#FFFFFF",c:"#CE1126",style:"solid"},  away:{p:"#CE1126",s:"#007A3D",c:"#FFFFFF",style:"solid"},  rating:3.5,votes:287},
-  "Portugal":      {home:{p:"#006600",s:"#FF0000",c:"#FF0000",style:"solid"},  away:{p:"#FF0000",s:"#006600",c:"#006600",style:"solid"},  rating:4.4,votes:3892},
-  "DR Congo":      {home:{p:"#007FFF",s:"#FFD700",c:"#CE1126",style:"solid"},  away:{p:"#FFD700",s:"#007FFF",c:"#CE1126",style:"solid"},  rating:3.8,votes:412},
-  "Uzbekistan":    {home:{p:"#1EB53A",s:"#FFFFFF",c:"#009FCC",style:"solid"},  away:{p:"#FFFFFF",s:"#1EB53A",c:"#CE1126",style:"solid"},  rating:3.6,votes:301},
-  "Colombia":      {home:{p:"#FDD116",s:"#003087",c:"#CE1126",style:"solid"},  away:{p:"#003087",s:"#FDD116",c:"#CE1126",style:"solid"},  rating:4.2,votes:2103},
-  "England":       {home:{p:"#FFFFFF",s:"#003090",c:"#CF081F",style:"solid"},  away:{p:"#003090",s:"#FFFFFF",c:"#CF081F",style:"solid"},  rating:4.3,votes:4521},
-  "Croatia":       {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"hoops"},  away:{p:"#003DA5",s:"#FFFFFF",c:"#003DA5",style:"solid"},  rating:4.6,votes:5012},
-  "Ghana":         {home:{p:"#006B3F",s:"#FCD116",c:"#CE1126",style:"solid"},  away:{p:"#FFFFFF",s:"#006B3F",c:"#CE1126",style:"solid"},  rating:3.8,votes:743},
-  "Panama":        {home:{p:"#DA121A",s:"#FFFFFF",c:"#003580",style:"solid"},  away:{p:"#FFFFFF",s:"#DA121A",c:"#003580",style:"solid"},  rating:3.6,votes:398},
+  "Mexico":        {home:{p:"#006847",s:"#CE1126",c:"#FFFFFF",style:"solid"},  away:{p:"#FFFFFF",s:"#006847",c:"#CE1126",style:"solid"},  rating:4.5},
+  "South Africa":  {home:{p:"#007A4D",s:"#FFB81C",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFB81C",c:"#007A4D",style:"solid"},  rating:3.9},
+  "Korea Republic":{home:{p:"#C60C30",s:"#003478",c:"#FFFFFF",style:"solid"},  away:{p:"#003478",s:"#C60C30",c:"#FFFFFF",style:"solid"},  rating:4.0},
+  "Czechia":       {home:{p:"#D7141A",s:"#FFFFFF",c:"#D7141A",style:"hoops"},  away:{p:"#FFFFFF",s:"#D7141A",c:"#D7141A",style:"solid"},  rating:3.5},
+  "Canada":        {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"solid"},  away:{p:"#000000",s:"#FF0000",c:"#FF0000",style:"solid"},  rating:4.1},
+  "Bosnia-Herz.":  {home:{p:"#003DA5",s:"#FFD700",c:"#003DA5",style:"sash"},   away:{p:"#FFFFFF",s:"#003DA5",c:"#003DA5",style:"solid"},  rating:3.7},
+  "Qatar":         {home:{p:"#8D1B3D",s:"#FFFFFF",c:"#8D1B3D",style:"solid"},  away:{p:"#FFFFFF",s:"#8D1B3D",c:"#8D1B3D",style:"solid"},  rating:3.2},
+  "Switzerland":   {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"solid"},  away:{p:"#FFFFFF",s:"#FF0000",c:"#FF0000",style:"solid"},  rating:3.8},
+  "Brazil":        {home:{p:"#009C3B",s:"#FFDF00",c:"#003087",style:"solid"},  away:{p:"#003087",s:"#FFDF00",c:"#009C3B",style:"solid"},  rating:4.9},
+  "Morocco":       {home:{p:"#C1272D",s:"#006233",c:"#C1272D",style:"solid"},  away:{p:"#006233",s:"#C1272D",c:"#006233",style:"solid"},  rating:4.3},
+  "Haiti":         {home:{p:"#00209F",s:"#D21034",c:"#FFFFFF",style:"solid"},  away:{p:"#FFFFFF",s:"#00209F",c:"#D21034",style:"solid"},  rating:3.4},
+  "Scotland":      {home:{p:"#003A8C",s:"#FFFFFF",c:"#003A8C",style:"solid"},  away:{p:"#FFFFFF",s:"#003A8C",c:"#003A8C",style:"solid"},  rating:3.9},
+  "USA":           {home:{p:"#002868",s:"#FFFFFF",c:"#BF0A30",style:"solid"},  away:{p:"#FFFFFF",s:"#002868",c:"#BF0A30",style:"solid"},  rating:4.0},
+  "Paraguay":      {home:{p:"#D52B1E",s:"#FFFFFF",c:"#0038A8",style:"stripes"},away:{p:"#FFFFFF",s:"#D52B1E",c:"#0038A8",style:"solid"},  rating:3.6},
+  "Australia":     {home:{p:"#FFD200",s:"#00843D",c:"#003082",style:"solid"},  away:{p:"#003082",s:"#FFD200",c:"#00843D",style:"solid"},  rating:4.0},
+  "Türkiye":       {home:{p:"#E30A17",s:"#FFFFFF",c:"#E30A17",style:"solid"},  away:{p:"#FFFFFF",s:"#E30A17",c:"#E30A17",style:"solid"},  rating:3.8},
+  "Germany":       {home:{p:"#FFFFFF",s:"#000000",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFFFFF",c:"#FFFFFF",style:"solid"},  rating:4.1},
+  "Curaçao":       {home:{p:"#002B7F",s:"#F9E814",c:"#009FC3",style:"solid"},  away:{p:"#009FC3",s:"#002B7F",c:"#F9E814",style:"solid"},  rating:3.5},
+  "Côte d'Ivoire": {home:{p:"#F77F00",s:"#009A44",c:"#FFFFFF",style:"stripes"},away:{p:"#009A44",s:"#F77F00",c:"#FFFFFF",style:"solid"},  rating:3.9},
+  "Ecuador":       {home:{p:"#FFD100",s:"#034EA2",c:"#CE1126",style:"solid"},  away:{p:"#034EA2",s:"#FFD100",c:"#CE1126",style:"solid"},  rating:3.7},
+  "Netherlands":   {home:{p:"#FF6600",s:"#FFFFFF",c:"#FF6600",style:"solid"},  away:{p:"#003DA5",s:"#FF6600",c:"#FF6600",style:"solid"},  rating:4.4},
+  "Japan":         {home:{p:"#1A3567",s:"#FFFFFF",c:"#BC002D",style:"solid"},  away:{p:"#FFFFFF",s:"#1A3567",c:"#BC002D",style:"solid"},  rating:4.2},
+  "Sweden":        {home:{p:"#006AA7",s:"#FECC02",c:"#006AA7",style:"solid"},  away:{p:"#FECC02",s:"#006AA7",c:"#006AA7",style:"solid"},  rating:4.1},
+  "Tunisia":       {home:{p:"#E70013",s:"#FFFFFF",c:"#E70013",style:"solid"},  away:{p:"#FFFFFF",s:"#E70013",c:"#E70013",style:"solid"},  rating:3.5},
+  "Belgium":       {home:{p:"#ED2939",s:"#000000",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#FFD700",c:"#ED2939",style:"solid"},  rating:4.2},
+  "Egypt":         {home:{p:"#CE1126",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#FFFFFF",s:"#CE1126",c:"#000000",style:"solid"},  rating:3.8},
+  "Iran":          {home:{p:"#239F40",s:"#FFFFFF",c:"#DA0000",style:"solid"},  away:{p:"#FFFFFF",s:"#239F40",c:"#DA0000",style:"solid"},  rating:3.6},
+  "New Zealand":   {home:{p:"#000000",s:"#FFFFFF",c:"#CC0000",style:"solid"},  away:{p:"#FFFFFF",s:"#000000",c:"#CC0000",style:"solid"},  rating:3.7},
+  "Spain":         {home:{p:"#AA151B",s:"#F1BF00",c:"#AA151B",style:"solid"},  away:{p:"#003DA5",s:"#AA151B",c:"#AA151B",style:"solid"},  rating:4.5},
+  "Cape Verde":    {home:{p:"#003893",s:"#CF2027",c:"#FFFFFF",style:"stripes"},away:{p:"#CF2027",s:"#003893",c:"#FFFFFF",style:"solid"},  rating:3.8},
+  "Saudi Arabia":  {home:{p:"#007A3D",s:"#FFFFFF",c:"#007A3D",style:"solid"},  away:{p:"#FFFFFF",s:"#007A3D",c:"#007A3D",style:"solid"},  rating:3.5},
+  "Uruguay":       {home:{p:"#5EB6E4",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#5EB6E4",c:"#5EB6E4",style:"solid"},  rating:4.0},
+  "France":        {home:{p:"#003189",s:"#FFFFFF",c:"#CF142B",style:"solid"},  away:{p:"#FFFFFF",s:"#003189",c:"#CF142B",style:"solid"},  rating:4.7},
+  "Senegal":       {home:{p:"#00853F",s:"#FDEF42",c:"#E31B23",style:"solid"},  away:{p:"#FFFFFF",s:"#00853F",c:"#E31B23",style:"solid"},  rating:4.1},
+  "Iraq":          {home:{p:"#CE1126",s:"#FFFFFF",c:"#000000",style:"solid"},  away:{p:"#000000",s:"#CE1126",c:"#FFFFFF",style:"solid"},  rating:3.4},
+  "Norway":        {home:{p:"#EF3340",s:"#002868",c:"#FFFFFF",style:"stripes"},away:{p:"#002868",s:"#EF3340",c:"#FFFFFF",style:"solid"},  rating:4.0},
+  "Argentina":     {home:{p:"#75AADB",s:"#FFFFFF",c:"#75AADB",style:"stripes"},away:{p:"#FFFFFF",s:"#75AADB",c:"#000000",style:"solid"},  rating:4.8},
+  "Algeria":       {home:{p:"#FFFFFF",s:"#D21034",c:"#006233",style:"solid"},  away:{p:"#D21034",s:"#FFFFFF",c:"#006233",style:"solid"},  rating:3.9},
+  "Austria":       {home:{p:"#ED2939",s:"#FFFFFF",c:"#ED2939",style:"solid"},  away:{p:"#FFFFFF",s:"#ED2939",c:"#ED2939",style:"solid"},  rating:3.7},
+  "Jordan":        {home:{p:"#007A3D",s:"#FFFFFF",c:"#CE1126",style:"solid"},  away:{p:"#CE1126",s:"#007A3D",c:"#FFFFFF",style:"solid"},  rating:3.5},
+  "Portugal":      {home:{p:"#006600",s:"#FF0000",c:"#FF0000",style:"solid"},  away:{p:"#FF0000",s:"#006600",c:"#006600",style:"solid"},  rating:4.4},
+  "DR Congo":      {home:{p:"#007FFF",s:"#FFD700",c:"#CE1126",style:"solid"},  away:{p:"#FFD700",s:"#007FFF",c:"#CE1126",style:"solid"},  rating:3.8},
+  "Uzbekistan":    {home:{p:"#1EB53A",s:"#FFFFFF",c:"#009FCC",style:"solid"},  away:{p:"#FFFFFF",s:"#1EB53A",c:"#CE1126",style:"solid"},  rating:3.6},
+  "Colombia":      {home:{p:"#FDD116",s:"#003087",c:"#CE1126",style:"solid"},  away:{p:"#003087",s:"#FDD116",c:"#CE1126",style:"solid"},  rating:4.2},
+  "England":       {home:{p:"#FFFFFF",s:"#003090",c:"#CF081F",style:"solid"},  away:{p:"#003090",s:"#FFFFFF",c:"#CF081F",style:"solid"},  rating:4.3},
+  "Croatia":       {home:{p:"#FF0000",s:"#FFFFFF",c:"#FF0000",style:"hoops"},  away:{p:"#003DA5",s:"#FFFFFF",c:"#003DA5",style:"solid"},  rating:4.6},
+  "Ghana":         {home:{p:"#006B3F",s:"#FCD116",c:"#CE1126",style:"solid"},  away:{p:"#FFFFFF",s:"#006B3F",c:"#CE1126",style:"solid"},  rating:3.8},
+  "Panama":        {home:{p:"#DA121A",s:"#FFFFFF",c:"#003580",style:"solid"},  away:{p:"#FFFFFF",s:"#DA121A",c:"#003580",style:"solid"},  rating:3.6},
 };
 
 // CSS SVG jersey component
@@ -2882,85 +2913,85 @@ const DEBATES = [
     id:1, category:"tournament", featured:true, hot:true,
     question:"Who wins the 2026 World Cup?",
     context:"48 teams, 1 trophy. The world's greatest debate. Pick your champion.",
-    sideA:{label:"Argentina",flag:"🇦🇷",color:"#75AADB",desc:"Defending champions. Messi's last dance. History on their side.",votes:28400},
-    sideB:{label:"France",   flag:"🇫🇷",color:"#003189",desc:"FIFA #1. Mbappé at his peak. The most complete squad.",votes:19200},
+    sideA:{label:"Argentina",flag:"🇦🇷",color:"#75AADB",desc:"Defending champions. Messi's last dance. History on their side."},
+    sideB:{label:"France",   flag:"🇫🇷",color:"#003189",desc:"FIFA #1. Mbappé at his peak. The most complete squad."},
   },
   {
     id:2, category:"players", featured:false, hot:true,
     question:"Right now — Messi or Mbappé?",
     context:"GOAT legacy vs peak performance. Who's the better player at this exact moment?",
-    sideA:{label:"Messi",  flag:"🇦🇷",color:"#75AADB",desc:"37 WC goals. World champion. The greatest of all time.",votes:14200},
-    sideB:{label:"Mbappé", flag:"🇫🇷",color:"#003189",desc:"27 years old. Peak speed. The future belongs to him.",votes:11800},
+    sideA:{label:"Messi",  flag:"🇦🇷",color:"#75AADB",desc:"37 WC goals. World champion. The greatest of all time."},
+    sideB:{label:"Mbappé", flag:"🇫🇷",color:"#003189",desc:"27 years old. Peak speed. The future belongs to him."},
   },
   {
     id:3, category:"predict", featured:false, hot:true,
     question:"Will Mbappé finally deliver at a World Cup?",
     context:"He's had the chances. 2018 finalist, 2022 golden boot. 2026 is his moment — or isn't it?",
-    sideA:{label:"Yes — this is his year",flag:"⚡",color:"#003189",desc:"Mature, captain, peak form. France are #1 for a reason.",votes:9800},
-    sideB:{label:"No — again bottle job", flag:"❌",color:"#F87171",desc:"Pressure of a WC is different. History says so.",votes:5400},
+    sideA:{label:"Yes — this is his year",flag:"⚡",color:"#003189",desc:"Mature, captain, peak form. France are #1 for a reason."},
+    sideB:{label:"No — again bottle job", flag:"❌",color:"#F87171",desc:"Pressure of a WC is different. History says so."},
   },
   {
     id:4, category:"tournament", featured:false, hot:false,
     question:"Who's the real Group of Death?",
     context:"Spain + Uruguay in H? France + Senegal in I? Brazil + Morocco in C? Only one can claim the title.",
-    sideA:{label:"Group H — Spain/Uruguay",flag:"🔥",color:"#AA151B",desc:"Two top-10 teams fighting for 2 spots. Death.",votes:7200},
-    sideB:{label:"Group I — France/Senegal",flag:"☠️",color:"#003189",desc:"The world's #1 team vs Africa's best. Carnage.",votes:8900},
+    sideA:{label:"Group H — Spain/Uruguay",flag:"🔥",color:"#AA151B",desc:"Two top-10 teams fighting for 2 spots. Death."},
+    sideB:{label:"Group I — France/Senegal",flag:"☠️",color:"#003189",desc:"The world's #1 team vs Africa's best. Carnage."},
   },
   {
     id:5, category:"players", featured:false, hot:false,
     question:"Ronaldo's last World Cup — does he retire happy?",
     context:"CR7 at 41. 212 caps. The only thing missing is the World Cup trophy. Does he get it?",
-    sideA:{label:"Yes — Portugal go deep",flag:"🙏",color:"#006600",desc:"Portugal have Ronaldo + Bruno. Dangerous enough to surprise.",votes:6100},
-    sideB:{label:"No — Group K is tough", flag:"💔",color:"#F87171",desc:"Colombia in the group. Career ends without the trophy.",votes:9200},
+    sideA:{label:"Yes — Portugal go deep",flag:"🙏",color:"#006600",desc:"Portugal have Ronaldo + Bruno. Dangerous enough to surprise."},
+    sideB:{label:"No — Group K is tough", flag:"💔",color:"#F87171",desc:"Colombia in the group. Career ends without the trophy."},
   },
   {
     id:6, category:"predict", featured:false, hot:false,
     question:"USA — do they reach the quarter finals?",
     context:"Home advantage. Massive crowds. A winnable Group D. But can USMNT handle the pressure?",
-    sideA:{label:"Yes — host nation magic",flag:"🇺🇸",color:"#002868",desc:"History favours hosts. Group D is there for the taking.",votes:11200},
-    sideB:{label:"No — out in groups",    flag:"😬",color:"#BF0A30",desc:"Türkiye and Australia are dangerous. It's not 1994.",votes:7800},
+    sideA:{label:"Yes — host nation magic",flag:"🇺🇸",color:"#002868",desc:"History favours hosts. Group D is there for the taking."},
+    sideB:{label:"No — out in groups",    flag:"😬",color:"#BF0A30",desc:"Türkiye and Australia are dangerous. It's not 1994."},
   },
   {
     id:7, category:"predict", featured:false, hot:true,
     question:"Dark horse of the tournament?",
     context:"Every World Cup has one. Who shocks the world in 2026?",
-    sideA:{label:"Morocco",  flag:"🇲🇦",color:"#C1272D",desc:"Reached the SF in 2022. Group C is tough but they can handle it.",votes:12400},
-    sideB:{label:"Colombia", flag:"🇨🇴",color:"#FDD116",desc:"Group K, quality squad, Falcao generation finally arrives.",votes:7800},
+    sideA:{label:"Morocco",  flag:"🇲🇦",color:"#C1272D",desc:"Reached the SF in 2022. Group C is tough but they can handle it."},
+    sideB:{label:"Colombia", flag:"🇨🇴",color:"#FDD116",desc:"Group K, quality squad, Falcao generation finally arrives."},
   },
   {
     id:8, category:"hottake", featured:false, hot:false,
     question:"Best kit of the tournament?",
     context:"Fans have spoken on the ratings. But head to head — who wins?",
-    sideA:{label:"Brazil Home",   flag:"🇧🇷",color:"#009C3B",desc:"The iconic yellow-green. Timeless. 4.9/5 on Golazo.",votes:18200},
-    sideB:{label:"Croatia Home",  flag:"🇭🇷",color:"#FF0000",desc:"The checkerboard. Instantly recognisable. 4.6/5 rated.",votes:14100},
+    sideA:{label:"Brazil Home",   flag:"🇧🇷",color:"#009C3B",desc:"The iconic yellow-green. Timeless. 4.9/5 on Golazo."},
+    sideB:{label:"Croatia Home",  flag:"🇭🇷",color:"#FF0000",desc:"The checkerboard. Instantly recognisable. 4.6/5 rated."},
   },
   {
     id:9, category:"hottake", featured:false, hot:false,
     question:"Is VAR helping or ruining the beautiful game?",
     context:"Every tournament brings the same debate. 2026 will be no different.",
-    sideA:{label:"Helping — more fairness",flag:"✅",color:"#22C55E",desc:"Fewer clear errors. Goals that count actually count.",votes:9100},
-    sideB:{label:"Ruining — kills the vibe",flag:"❌",color:"#F87171",desc:"Kills celebrations. Slows the game. Marginal calls ruin moments.",votes:14300},
+    sideA:{label:"Helping — more fairness",flag:"✅",color:"#22C55E",desc:"Fewer clear errors. Goals that count actually count."},
+    sideB:{label:"Ruining — kills the vibe",flag:"❌",color:"#F87171",desc:"Kills celebrations. Slows the game. Marginal calls ruin moments."},
   },
   {
     id:10, category:"players", featured:false, hot:false,
     question:"Who's the best young player of the tournament?",
     context:"A new generation takes the stage. Who defines the 2026 World Cup?",
-    sideA:{label:"Lamine Yamal",  flag:"🇪🇸",color:"#AA151B",desc:"18 years old. Euro 2024 winner. Spain's left flank wizard.",votes:13200},
-    sideB:{label:"Jude Bellingham",flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",color:"#CF081F",desc:"England captain. Real Madrid midfielder. Born for this.",votes:11800},
+    sideA:{label:"Lamine Yamal",  flag:"🇪🇸",color:"#AA151B",desc:"18 years old. Euro 2024 winner. Spain's left flank wizard."},
+    sideB:{label:"Jude Bellingham",flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",color:"#CF081F",desc:"England captain. Real Madrid midfielder. Born for this."},
   },
   {
     id:11, category:"tournament", featured:false, hot:false,
     question:"Brazil or Argentina — South American final?",
     context:"They're in different sides of the bracket. Could they meet in the final?",
-    sideA:{label:"Brazil win it",   flag:"🇧🇷",color:"#009C3B",desc:"6th World Cup. Vinicius. Morocco tested in group stage.",votes:9800},
-    sideB:{label:"Argentina retain",flag:"🇦🇷",color:"#75AADB",desc:"Back-to-back? Messi's going for the ultimate legacy.",votes:12400},
+    sideA:{label:"Brazil win it",   flag:"🇧🇷",color:"#009C3B",desc:"6th World Cup. Vinicius. Morocco tested in group stage."},
+    sideB:{label:"Argentina retain",flag:"🇦🇷",color:"#75AADB",desc:"Back-to-back? Messi's going for the ultimate legacy."},
   },
   {
     id:12, category:"hottake", featured:false, hot:false,
     question:"48 teams — great idea or too many?",
     context:"This is the first 48-team World Cup. More nations, more matches, more drama. Or more filler?",
-    sideA:{label:"Great — more nations!",flag:"🌍",color:"#D4AF37",desc:"Haiti, Jordan, Curaçao get their moment. Football belongs to everyone.",votes:16200},
-    sideB:{label:"Too many — quality drops",flag:"📉",color:"#F87171",desc:"Group stage becomes predictable. Too many one-sided matches.",votes:11800},
+    sideA:{label:"Great — more nations!",flag:"🌍",color:"#D4AF37",desc:"Haiti, Jordan, Curaçao get their moment. Football belongs to everyone."},
+    sideB:{label:"Too many — quality drops",flag:"📉",color:"#F87171",desc:"Group stage becomes predictable. Too many one-sided matches."},
   },
 ];
 
@@ -3042,7 +3073,7 @@ function DebatePage() {
       {/* ── COMMUNITY STATS ── */}
       <div style={{marginTop:"36px",padding:"20px 24px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"14px",display:"flex",gap:"24px",flexWrap:"wrap",alignItems:"center"}}>
         <div>
-          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",color:"#D4AF37",lineHeight:1}}>{(DEBATES.reduce((s,d)=>s+d.sideA.votes+d.sideB.votes,0) + Object.values(voteCounts).reduce((s,c)=>s+(c.A||0)+(c.B||0),0)).toLocaleString()}</div>
+          <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",color:"#D4AF37",lineHeight:1}}>{(Object.values(voteCounts).reduce((s,c)=>s+(c.A||0)+(c.B||0),0)).toLocaleString()}</div>
           <div style={{fontSize:"0.62rem",color:"rgba(255,255,255,0.3)",letterSpacing:"0.1em",textTransform:"uppercase"}}>Total votes cast</div>
         </div>
         <div style={{width:"1px",height:"40px",background:"rgba(255,255,255,0.06)"}}/>
@@ -3372,7 +3403,7 @@ function EmailModal({open, onClose}) {
                 transform:hovBtn&&status!=="submitting"?"translateY(-1px)":"none",
                 boxShadow:hovBtn?"0 8px 24px rgba(212,175,55,0.3)":"none",
               }}>
-                {status==="submitting" ? "🔄 Joining..." : "🔥 Join The Fan World →"}
+                {status==="submitting" ? "🔄 Joining..." : "Join The Fan World →"}
               </button>
 
               {status==="error" && (
@@ -3414,13 +3445,23 @@ const TEAM_FLAG_MAP = Object.fromEntries(
   GROUPS.flatMap(g => g.teams.map(t => [t.name.toLowerCase(), t.flag]))
 );
 
+// API returns different team names — map them before flag lookup
+const SCORER_TEAM_NORM = {
+  "south korea":"korea republic","republic of korea":"korea republic",
+  "korea, republic of":"korea republic","ivory coast":"côte d'ivoire",
+  "bosnia and herzegovina":"bosnia-herz.","bosnia & herzegovina":"bosnia-herz.",
+  "turkiye":"türkiye","turkey":"türkiye","curacao":"curaçao",
+  "cape verde islands":"cape verde","dr congo":"dr congo","congo dr":"dr congo",
+};
 function getTeamFlag(teamName) {
   if (!teamName) return "🏳️";
-  const key = teamName.toLowerCase();
-  // direct match
+  const key = teamName.toLowerCase().trim();
+  const norm = SCORER_TEAM_NORM[key] || key;
+  // exact match on normalized name
+  if (TEAM_FLAG_MAP[norm]) return TEAM_FLAG_MAP[norm];
   if (TEAM_FLAG_MAP[key]) return TEAM_FLAG_MAP[key];
-  // fuzzy — find first partial match
-  const found = Object.keys(TEAM_FLAG_MAP).find(k => k.includes(key.split(" ")[0]) || key.includes(k.split(" ")[0]));
+  // safe fuzzy — full string containment only, no first-word shortcut
+  const found = Object.keys(TEAM_FLAG_MAP).find(k => k.includes(norm) || norm.includes(k));
   return found ? TEAM_FLAG_MAP[found] : "🏳️";
 }
 
@@ -3533,7 +3574,7 @@ function TopScorersPage() {
         {rest.length > 0 && (
           <div style={{background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:"16px", overflow:"hidden"}}>
             {/* table header */}
-            <div style={{display:"grid", gridTemplateColumns:"44px 1fr 80px 64px 64px", padding:"10px 16px", borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+            <div style={{display:"grid", gridTemplateColumns:"36px 1fr auto 48px 40px", padding:"10px 16px", borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
               {["#","Player","Team","G","A"].map(h=>(
                 <div key={h} style={{fontSize:"0.58rem", color:"rgba(255,255,255,0.3)", letterSpacing:"0.15em", textTransform:"uppercase", textAlign:h==="Player"?"left":"center", fontWeight:600}}>{h}</div>
               ))}
@@ -3542,16 +3583,16 @@ function TopScorersPage() {
               const rank = i + 4;
               const flag = getTeamFlag(s.team?.name);
               return (
-                <div key={i} className="stat-row" style={{display:"grid", gridTemplateColumns:"44px 1fr 80px 64px 64px", padding:"13px 16px", borderBottom:"1px solid rgba(255,255,255,0.04)", alignItems:"center"}}>
+                <div key={i} className="stat-row" style={{display:"grid", gridTemplateColumns:"36px 1fr auto 48px 40px", padding:"13px 16px", borderBottom:"1px solid rgba(255,255,255,0.04)", alignItems:"center"}}>
                   <div style={{fontSize:"0.75rem", color:"rgba(255,255,255,0.25)", textAlign:"center", fontWeight:600}}>{rank}</div>
-                  <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
-                    <span style={{fontSize:"1.1rem"}}>{flag}</span>
-                    <div>
-                      <div style={{fontWeight:600, fontSize:"0.88rem"}}>{s.player?.name}</div>
-                      <div style={{fontSize:"0.6rem", color:"rgba(255,255,255,0.3)"}}>{s.player?.nationality}</div>
+                  <div style={{display:"flex", alignItems:"center", gap:"8px", minWidth:0}}>
+                    <span style={{fontSize:"1rem", flexShrink:0}}>{flag}</span>
+                    <div style={{minWidth:0}}>
+                      <div style={{fontWeight:600, fontSize:"0.82rem", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{s.player?.name}</div>
+                      <div style={{fontSize:"0.58rem", color:"rgba(255,255,255,0.3)", whiteSpace:"nowrap"}}>{s.player?.nationality}</div>
                     </div>
                   </div>
-                  <div style={{fontSize:"0.72rem", color:"rgba(255,255,255,0.4)", textAlign:"center"}}>{s.team?.shortName||s.team?.name}</div>
+                  <div style={{fontSize:"0.68rem", color:"rgba(255,255,255,0.4)", textAlign:"center", whiteSpace:"nowrap", paddingLeft:"8px"}}>{s.team?.shortName||s.team?.name?.split(" ").slice(0,2).join(" ")}</div>
                   <div style={{textAlign:"center"}}>
                     <span style={{fontFamily:"'Bebas Neue',cursive", fontSize:"1.2rem", color:"#D4AF37"}}>{s.goals}</span>
                   </div>
@@ -3577,6 +3618,25 @@ function TopScorersPage() {
       </>)}
     </div>
   );
+}
+
+
+class ErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError:false }; }
+  static getDerivedStateFromError() { return { hasError:true }; }
+  componentDidCatch(e) { console.error("Golazo render error:", e); }
+  render() {
+    if(this.state.hasError) return (
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",gap:"16px",padding:"32px",textAlign:"center"}}>
+        <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",color:"#D4AF37",letterSpacing:"0.06em"}}>Something went wrong</div>
+        <div style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)"}}>Tap below to reload this section</div>
+        <button onClick={()=>this.setState({hasError:false})} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"10px 24px",fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"0.88rem"}}>
+          Try Again
+        </button>
+      </div>
+    );
+    return this.props.children;
+  }
 }
 
 export default function Golazo() {
@@ -3670,7 +3730,7 @@ export default function Golazo() {
       `}</style>
       <EmailModal open={showEmail} onClose={()=>setShowEmail(false)}/>
       <NavBar activeNav={activeNav} setActiveNav={setActiveNav} scrolled={scrolled} onJoin={()=>setShowEmail(true)}/>
-      {renderPage()}
+      <ErrorBoundary key={activeNav}>{renderPage()}</ErrorBoundary>
       <Footer/>
     </div>
   );
