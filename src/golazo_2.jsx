@@ -1109,21 +1109,11 @@ function HomePage({setActiveNav}) {
 
       {/* ── DEBATE / KITS ── */}
       <section style={{padding:"40px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
-          <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            
+        <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
             <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan debate · 3,200+ active</div>
             <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Debate Rooms</h3>
             <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Is this Messi's last shot? Will Mbappé finally deliver? Drop your take.</p>
             <button className="join-btn" onClick={()=>setActiveNav("Debate")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"10px 20px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Enter Debate →</button>
-          </div>
-          <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Kit culture · all 48 kits</div>
-            <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Jersey Gallery</h3>
-            <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Rate every kit. Fans have voted Brazil home as the best of 2026.</p>
-            <button onClick={()=>setActiveNav("Kits")} style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.65)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",padding:"10px 20px",fontWeight:500,fontSize:"0.8rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>Browse Kits →</button>
-          </div>
         </div>
       </section>
     </>
