@@ -3671,7 +3671,11 @@ export default function Golazo() {
   },[]);
 
   useEffect(()=>{
-    document.getElementById("gz-root")?.scrollTo({top:0,behavior:"smooth"});
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const el = document.getElementById("gz-root");
+    if(el) el.scrollTop = 0;
   },[activeNav]);
 
   const renderPage=()=>{
