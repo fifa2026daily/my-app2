@@ -1110,7 +1110,7 @@ function HomePage({setActiveNav}) {
       {/* ── DEBATE / KITS ── */}
       <section style={{padding:"40px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
         <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan debate · 3,200+ active</div>
+            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan Debate</div>
             <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Debate Rooms</h3>
             <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Is this Messi's last shot? Will Mbappé finally deliver? Drop your take.</p>
             <button className="join-btn" onClick={()=>setActiveNav("Debate")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"10px 20px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Enter Debate →</button>
