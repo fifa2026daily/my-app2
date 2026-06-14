@@ -1062,7 +1062,7 @@ function HomePage({setActiveNav}) {
           <div>
             <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"8px"}}>Fan Predictions — Open Now</div>
             <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.4rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Who Lifts The Trophy?</h2>
-            <p style={{color:"rgba(255,255,255,0.45)",fontSize:"0.9rem",maxWidth:"460px"}}>Lock in before Jun 11. Track your call through every round. Brag rights await.</p>
+            <p style={{color:"rgba(255,255,255,0.45)",fontSize:"0.9rem",maxWidth:"460px"}}>Pick your champion. Track your call through every round. Brag rights await.</p>
           </div>
           <div style={{display:"flex",gap:"10px",flexWrap:"wrap",justifyContent:"center"}}>
             {FAVORITES.map(f=>(
@@ -1076,7 +1076,7 @@ function HomePage({setActiveNav}) {
               Prediction locked: {FAVORITES.find(f=>f.name===prediction)?.flag} {prediction} to win the 2026 World Cup
             </div>
           )}
-          <button className="join-btn" style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 32px",fontWeight:700,fontSize:"0.92rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
+          <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 32px",fontWeight:700,fontSize:"0.92rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
             Submit & See Fan Votes →
           </button>
         </div>
