@@ -272,9 +272,7 @@ function Footer() {
         <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"0.9rem",color:"#D4AF37",letterSpacing:"0.08em"}}>GOLAZO</div>
       </div>
       <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.18)"}}>Fan-made · Not affiliated with FIFA · Built for the beautiful game</div>
-      <div style={{display:"flex",gap:"16px"}}>
-        {["Twitter/X","Discord","Instagram"].map(s=><span key={s} style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.25)",cursor:"pointer"}}>{s}</span>)}
-      </div>
+      <div style={{fontSize:"0.7rem",color:"rgba(255,255,255,0.15)"}}>© 2026 Golazo</div>
     </footer>
   );
 }
@@ -1179,10 +1177,10 @@ const TIMEZONES = {
 const BROADCASTERS = {
   ET:   [{ name:"Fox Sports", tag:"English" }, { name:"Telemundo",  tag:"Español"  }, { name:"FS1/FS2",    tag:"Cable"    }],
   PT:   [{ name:"Fox Sports", tag:"English" }, { name:"Telemundo",  tag:"Español"  }, { name:"FS1/FS2",    tag:"Cable"    }],
-  GMT:  [{ name:"BBC",        tag:"Free"    }, { name:"ITV",        tag:"Free"     }, { name:"TNT Sports", tag:"Cable"    }],
-  CET:  [{ name:"ARD/ZDF",    tag:"🇩🇪 DE"  }, { name:"TF1",        tag:"🇫🇷 FR"   }, { name:"DAZN",       tag:"Streaming"}],
-  IST:  [{ name:"Sports18",   tag:"TV"      }, { name:"JioCinema",  tag:"Free App" }, { name:"DD Sports",  tag:"Free TV"  }],
-  AEST: [{ name:"SBS",        tag:"Free"    }, { name:"Optus Sport",tag:"Streaming"}, { name:"Paramount+", tag:"Streaming"}],
+  GMT:  [{ name:"BBC",        tag:"Free"    }, { name:"ITV",        tag:"Free"     }],
+  CET:  [{ name:"ARD/ZDF",    tag:"🇩🇪 DE"  }, { name:"M6",         tag:"🇫🇷 FR"   }, { name:"beIN Sports",tag:"Streaming"}],
+  IST:  [{ name:"ZEE5",       tag:"Streaming"}, { name:"Zee Sports", tag:"TV"      }],
+  AEST: [{ name:"SBS",        tag:"Free"    }, { name:"SBS On Demand",tag:"Free App"}],
 };
 
 function convertTime(timeStr, offsetHours, dateStr = null) {
@@ -1346,6 +1344,13 @@ function FixturesPage() {
               placeholder="Search team..."
               value={search}
               onChange={e=>{setSearch(e.target.value);if(e.target.value)setStage("group");}}
+              spellCheck={false}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              data-gramm="false"
+              data-gramm_editor="false"
+              data-enable-grammarly="false"
               style={{background:"rgba(255,255,255,0.05)",border:`1px solid ${search?"rgba(212,175,55,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:"8px",padding:"8px 36px 8px 14px",color:"#EEE9DF",fontSize:"0.8rem",fontFamily:"'DM Sans',sans-serif",outline:"none",width:"180px",transition:"border-color 0.2s"}}
             />
             {search
@@ -1469,6 +1474,9 @@ function FixturesPage() {
           {search && <div style={{marginBottom:"12px",fontSize:"0.72rem",color:"rgba(255,255,255,0.35)"}}>
             <span style={{color:"#D4AF37",fontWeight:600}}>{visibleGroup.length} {visibleGroup.length===1?"match":"matches"}</span>{" for "}<span style={{color:"#D4AF37"}}>{search}</span>
           </div>}
+          {/* key=search forces full remount on each search change, preventing
+              browser-extension (Google Translate) DOM interference */}
+          <div key={search}>
           {visibleGroup.length===0
             ? <div style={{textAlign:"center",padding:"48px",color:"rgba(255,255,255,0.3)"}}>No matches found</div>
             : Object.entries(byDate).filter(([d])=>d&&d.includes(" ")).sort(([a],[b])=>{
@@ -1489,6 +1497,7 @@ function FixturesPage() {
               </div>
             ))
           }
+          </div>{/* end key=search remount wrapper */}
         </>
       ) : (
         <>
@@ -1535,7 +1544,10 @@ function MatchCard({f, isGroup, tz="ET", getScore=null}) {
   const roundColor = ROUND_COLORS[f.round] || "rgba(255,255,255,0.3)";
   const displayTime = convertTime(f.time, TIMEZONES[tz]?.offset||0, f.date);
   const broadcasters = BROADCASTERS[tz]||BROADCASTERS.ET;
-  const score  = (!isTBD && getScore) ? getScore(f.home, f.away) : null;
+  const score  = (() => {
+    try { return (!isTBD && getScore) ? getScore(f.home, f.away) : null; }
+    catch(e) { return null; }
+  })();
   const isLive = score?.status==="IN_PLAY"||score?.status==="HALFTIME"||score?.status==="PAUSED";
   const isFT   = score?.status==="FINISHED";
 
@@ -1811,7 +1823,7 @@ function PredictionsPage() {
         subtitle={`Pick the winner of each group — ${Object.keys(groupPicks).length}/12 done`}
         done={Object.keys(groupPicks).length===12} locked={locked}
       >
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:"10px"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:"10px",alignItems:"start"}}>
           {GROUPS.map(g=>(
             <GroupPickCard
               key={g.id} group={g}
@@ -1993,17 +2005,17 @@ function GroupPickCard({group,picked,locked,onPick}) {
               <div style={{fontSize:"0.6rem",color:"rgba(255,255,255,0.3)"}}>Your pick ✓</div>
             </div>
           </div>
-          {!locked && <button onClick={e=>{e.preventDefault();setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();setOpen(v=>!v);}} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:"6px",padding:"4px 9px",cursor:"pointer",color:"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.65rem",touchAction:"manipulation"}}>Change</button>}
+          {!locked && <button type="button" onClick={e=>{e.preventDefault();setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();setOpen(v=>!v);}} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.09)",borderRadius:"6px",padding:"4px 9px",cursor:"pointer",color:"rgba(255,255,255,0.4)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.65rem",touchAction:"manipulation"}}>Change</button>}
         </div>
       ) : (
-        <button onClick={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px dashed rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px",cursor:"pointer",color:"rgba(255,255,255,0.3)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.75rem",textAlign:"center",touchAction:"manipulation"}}>
+        <button type="button" onClick={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} onTouchEnd={e=>{e.preventDefault();if(!locked)setOpen(v=>!v);}} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"1px dashed rgba(255,255,255,0.1)",borderRadius:"8px",padding:"8px",cursor:"pointer",color:"rgba(255,255,255,0.3)",fontFamily:"'DM Sans',sans-serif",fontSize:"0.75rem",textAlign:"center",touchAction:"manipulation"}}>
           + Pick Group Winner
         </button>
       )}
       {open && !locked && (
         <div style={{marginTop:"10px",display:"flex",flexDirection:"column",gap:"4px"}}>
           {group.teams.map(t=>(
-            <button key={t.name} onClick={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} onTouchEnd={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} style={{
+            <button type="button" key={t.name} onClick={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} onTouchEnd={e=>{e.preventDefault();onPick(t.name);setOpen(false);}} style={{
               background:picked===t.name?"rgba(212,175,55,0.1)":"rgba(255,255,255,0.025)",
               border:`1px solid ${picked===t.name?"rgba(212,175,55,0.3)":"rgba(255,255,255,0.06)"}`,
               borderRadius:"7px",padding:"8px 10px",cursor:"pointer",
@@ -2337,7 +2349,7 @@ function BuzzCard({item, featured, expanded, onToggle, index=0}) {
             {t.flag} {t.name}
           </span>
         ))}
-        <span style={{marginLeft:"auto",fontSize:"0.62rem",color:"rgba(255,255,255,0.25)"}}>{item.time}</span>
+
       </div>
 
       {/* headline */}
@@ -3426,9 +3438,11 @@ function EmailModal({open, onClose}) {
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 
 function hexToRgb(hex) {
+  if (!hex || typeof hex !== 'string' || !hex.startsWith('#') || hex.length < 7) return '200,200,200';
   const r=parseInt(hex.slice(1,3),16);
   const g=parseInt(hex.slice(3,5),16);
   const b=parseInt(hex.slice(5,7),16);
+  if (isNaN(r)||isNaN(g)||isNaN(b)) return '200,200,200';
   return `${r},${g},${b}`;
 }
 
@@ -3644,6 +3658,21 @@ export default function Golazo() {
   const [scrolled,setScrolled]=useState(false);
   const [showEmail,setShowEmail]=useState(false);
 
+  // navigate() pushes history so phone back-button goes to previous section
+  const navigate = useCallback((nav) => {
+    window.history.pushState({nav}, '', '');
+    setActiveNav(nav);
+  }, []);
+
+  useEffect(()=>{
+    window.history.replaceState({nav:"Home"}, '', '');
+    const handlePop = (e) => {
+      setActiveNav(e.state?.nav || "Home");
+    };
+    window.addEventListener("popstate", handlePop);
+    return ()=>window.removeEventListener("popstate", handlePop);
+  },[]);
+
   useEffect(()=>{
     const el=document.getElementById("gz-root");
     const fn=()=>setScrolled(el?.scrollTop>50);
@@ -3657,7 +3686,7 @@ export default function Golazo() {
 
   const renderPage=()=>{
     switch(activeNav){
-      case "Home":        return <HomePage setActiveNav={setActiveNav}/>;
+      case "Home":        return <HomePage setActiveNav={navigate}/>;
       case "Groups":      return <GroupsPage/>;
       case "Fixtures":    return <FixturesPage/>;
       case "Buzz":        return <BuzzPage/>;
@@ -3670,7 +3699,7 @@ export default function Golazo() {
   };
 
   return (
-    <div id="gz-root" style={{fontFamily:"'DM Sans', sans-serif",background:"#060A10",color:"#EEE9DF",minHeight:"100vh",overflowY:"auto",overflowX:"hidden"}}>
+    <div id="gz-root" translate="no" className="notranslate" style={{fontFamily:"'DM Sans', sans-serif",background:"#060A10",color:"#EEE9DF",minHeight:"100vh",overflowY:"auto",overflowX:"hidden"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@1&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
@@ -3729,7 +3758,7 @@ export default function Golazo() {
 
       `}</style>
       <EmailModal open={showEmail} onClose={()=>setShowEmail(false)}/>
-      <NavBar activeNav={activeNav} setActiveNav={setActiveNav} scrolled={scrolled} onJoin={()=>setShowEmail(true)}/>
+      <NavBar activeNav={activeNav} setActiveNav={navigate} scrolled={scrolled} onJoin={()=>setShowEmail(true)}/>
       <ErrorBoundary key={activeNav}>{renderPage()}</ErrorBoundary>
       <Footer/>
     </div>
