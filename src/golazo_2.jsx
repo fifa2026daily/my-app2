@@ -815,35 +815,52 @@ function HomePage({setActiveNav}) {
             <img src="/fifa_trophy.png" alt="FIFA Trophy" style={{width:"120px",filter:"drop-shadow(0 0 30px rgba(212,175,55,0.5))",animation:"float-trophy 4s ease-in-out infinite"}} onError={e=>e.target.style.display="none"}/>
           </div>
 
-          {/* Next match badge — dynamic */}
+          {/* Next match badge — key forces remount on status change, blocking Google Translate DOM conflict */}
           {(()=>{
+            // 1. Check all fixtures for a live match via getScore
+            let liveF=null, liveG=null, liveSc=null;
+            GROUPS.flatMap(g=>g.fixtures.map(f=>({f,g}))).find(({f,g})=>{
+              try {
+                const s=getScore(f.home,f.away);
+                if(s?.status==="IN_PLAY"||s?.status==="HALFTIME"||s?.status==="PAUSED"){
+                  liveF=f; liveG=g; liveSc=s; return true;
+                }
+              } catch(e){}
+              return false;
+            });
+            if(liveF) return (
+              <div key={`live-${liveF.home}-${liveF.away}`} translate="no" style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,59,48,0.06)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:"12px",padding:"12px 18px"}}>
+                <span style={{fontSize:"1.3rem",animation:"float 3s infinite"}}>{liveG.teams.find(t=>t.name===liveF.home)?.flag||"⚽"}</span>
+                <div>
+                  <div style={{fontSize:"0.6rem",color:"#FF3B30",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>🔴 LIVE NOW</div>
+                  <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:"8px"}}>
+                    {liveF.home}<span style={{color:"#FF3B30",fontSize:"1.2rem",fontWeight:700}}> {liveSc.home} - {liveSc.away} </span>{liveF.away} · {liveF.city}
+                  </div>
+                </div>
+                <span style={{fontSize:"1.3rem",animation:"float 3s infinite",animationDelay:"0.5s"}}>{liveG.teams.find(t=>t.name===liveF.away)?.flag||"⚽"}</span>
+              </div>
+            );
+            // 2. No live match — show next upcoming
             const next = getNextMatch();
             if(!next) return null;
+            const sc = getScore(next.home, next.away);
+            const isFT = sc?.status==="FINISHED";
             const isToday = next.date === new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"}).replace(",","");
             return (
-              <div style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",padding:"12px 18px"}}>
+              <div key={`next-${next.home}-${sc?.status||"_"}`} translate="no" style={{marginTop:"28px",display:"inline-flex",alignItems:"center",gap:"10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"12px",padding:"12px 18px"}}>
                 <span style={{fontSize:"1.3rem",animation:"float 3s infinite"}}>{next.homeTeam?.flag||"⚽"}</span>
                 <div>
-                  {(()=>{
-                    const sc = getScore(next.home, next.away);
-                    const isLive = sc?.status==="IN_PLAY"||sc?.status==="HALFTIME"||sc?.status==="PAUSED";
-                    const isFT  = sc?.status==="FINISHED";
-                    return (
-                      <>
-                        <div style={{fontSize:"0.6rem",color:isLive?"#FF3B30":isToday?"#FF6B35":"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>
-                          {isLive?"🔴 LIVE NOW":isFT?"✅ FULL TIME":isToday?"🔴 TODAY":"📅 NEXT"} · {!isFT&&!isLive&&`${convertTime(next.time, 9.5, next.date)} IST`}
-                        </div>
-                        <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:"8px"}}>
-                          {next.home}
-                          {sc && sc.home!==null
-                            ? <span style={{color:isLive?"#FF3B30":"#D4AF37",fontSize:"1.2rem",fontWeight:700}}> {sc.home} - {sc.away} </span>
-                            : <span style={{color:"rgba(255,255,255,0.3)",fontSize:"0.75rem",fontWeight:400,letterSpacing:"0.05em"}}> vs </span>
-                          }
-                          {next.away} · {next.city}
-                        </div>
-                      </>
-                    );
-                  })()}
+                  <div style={{fontSize:"0.6rem",color:isFT?"#4ADE80":isToday?"#FF6B35":"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",fontWeight:700}}>
+                    {isFT?"✅ FULL TIME":isToday?"🔴 TODAY":"📅 NEXT"} · {!isFT&&`${convertTime(next.time, 9.5, next.date)} IST`}
+                  </div>
+                  <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1rem",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:"8px"}}>
+                    {next.home}
+                    {sc && sc.home!==null
+                      ? <span style={{color:"#D4AF37",fontSize:"1.2rem",fontWeight:700}}> {sc.home} - {sc.away} </span>
+                      : <span style={{color:"rgba(255,255,255,0.3)",fontSize:"0.75rem",fontWeight:400,letterSpacing:"0.05em"}}> vs </span>
+                    }
+                    {next.away} · {next.city}
+                  </div>
                 </div>
                 <span style={{fontSize:"1.3rem",animation:"float 3s infinite",animationDelay:"0.5s"}}>{next.awayTeam?.flag||"⚽"}</span>
               </div>
