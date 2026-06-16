@@ -1008,48 +1008,6 @@ function HomePage({setActiveNav}) {
         </div>
       </section>
 
-      {/* ── STORYLINES — editorial cards ── */}
-      <section style={{padding:"60px 0 0"}}>
-        <div style={{padding:"0 28px",maxWidth:"1100px",margin:"0 auto",marginBottom:"24px"}}>
-          <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>What everyone's talking about</div>
-          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em"}}>The Biggest Storylines</h2>
-        </div>
-        {/* horizontal scroll on mobile, grid on desktop */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:"12px",padding:"0 28px",maxWidth:"1100px",margin:"0 auto"}}>
-          {STORYLINES.map((s,i)=>{
-            const [hov,setHov]=[useState(false),(v)=>{}];
-            return (
-              <StoryCard key={i} s={s}/>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ── OPENING FIXTURES ── */}
-      <section style={{padding:"52px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"22px"}}>
-          <div>
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>Real fixtures · confirmed</div>
-            <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",letterSpacing:"0.04em"}}>Opening Week</h2>
-          </div>
-          <button onClick={()=>setActiveNav("Fixtures")} style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.3)",background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>View all →</button>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:"4px"}}>
-          {OPENING_FIXTURES.map((f,i)=>(
-            <div key={i} className="fix-row" onMouseEnter={()=>setHovFix(i)} onMouseLeave={()=>setHovFix(null)}
-              style={{display:"grid",gridTemplateColumns:"auto auto 1fr auto",alignItems:"center",gap:"8px",padding:"12px 14px",borderRadius:"10px",border:"1px solid",cursor:"pointer",borderColor:hovFix===i?"rgba(212,175,55,0.2)":"rgba(255,255,255,0.06)",background:hovFix===i?"rgba(212,175,55,0.04)":"transparent",transition:"all 0.2s"}}>
-              <div style={{fontSize:"0.68rem",color:"rgba(255,255,255,0.3)",fontWeight:500,whiteSpace:"nowrap"}}>{f.date}</div>
-              <div style={{background:"rgba(212,175,55,0.1)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.6rem",color:"#D4AF37",fontWeight:700,whiteSpace:"nowrap"}}>GRP {f.group}</div>
-              <div style={{fontWeight:600,fontSize:"0.85rem",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{f.teams}</div>
-              <div style={{display:"flex",alignItems:"center",gap:"6px",justifyContent:"flex-end"}}>
-                <span style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.45)",whiteSpace:"nowrap"}}>{f.time}</span>
-                {f.hot&&<div style={{background:"rgba(255,59,48,0.15)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:"4px",padding:"2px 6px",fontSize:"0.58rem",color:"#FF3B30",fontWeight:700,whiteSpace:"nowrap"}}>HOT</div>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ── TITLE FAVOURITES ── */}
       <section style={{padding:"52px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
         <div style={{marginBottom:"22px"}}>
@@ -1072,65 +1030,45 @@ function HomePage({setActiveNav}) {
         </div>
       </section>
 
-      {/* ── PREDICTION CTA ── */}
+      {/* ── PREDICTION CTA + DEBATE — side by side ── */}
       <section style={{padding:"52px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{background:"linear-gradient(135deg,rgba(212,175,55,0.08),rgba(255,107,53,0.06))",border:"1px solid rgba(212,175,55,0.2)",borderRadius:"20px",padding:"44px 36px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",gap:"24px",position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",right:"-20px",top:"-20px",fontSize:"9rem",opacity:0.04,pointerEvents:"none"}}>🏆</div>
-          <div>
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"8px"}}>Fan Predictions — Open Now</div>
-            <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.4rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Who Lifts The Trophy?</h2>
-            <p style={{color:"rgba(255,255,255,0.45)",fontSize:"0.9rem",maxWidth:"460px"}}>Pick your champion. Track your call through every round. Brag rights await.</p>
-          </div>
-          <div style={{display:"flex",gap:"10px",flexWrap:"wrap",justifyContent:"center"}}>
-            {FAVORITES.map(f=>(
-              <button key={f.name} className="predict-btn" onClick={()=>setPrediction(f.name)} style={{background:prediction===f.name?"#D4AF37":"rgba(255,255,255,0.05)",color:prediction===f.name?"#060A10":"rgba(255,255,255,0.7)",border:`1px solid ${prediction===f.name?"#D4AF37":"rgba(255,255,255,0.12)"}`,borderRadius:"10px",padding:"10px 16px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:prediction===f.name?700:500,fontSize:"0.82rem",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"6px"}}>
-                {f.flag} {f.name}
-              </button>
-            ))}
-          </div>
-          {prediction&&(
-            <div style={{background:"rgba(212,175,55,0.12)",border:"1px solid rgba(212,175,55,0.3)",borderRadius:"10px",padding:"12px 24px",fontSize:"0.88rem",color:"#D4AF37",fontWeight:600,animation:"fadeUp 0.3s ease"}}>
-              Prediction locked: {FAVORITES.find(f=>f.name===prediction)?.flag} {prediction} to win the 2026 World Cup
-            </div>
-          )}
-          <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 32px",fontWeight:700,fontSize:"0.92rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
-            Submit & See Fan Votes →
-          </button>
-        </div>
-      </section>
+        <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"12px",alignItems:"stretch"}}>
 
-      {/* ── GROUPS PREVIEW ── */}
-      <section style={{padding:"52px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"22px"}}>
-          <div>
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>Official draw confirmed</div>
-            <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2rem",letterSpacing:"0.04em"}}>All 12 Groups</h2>
-          </div>
-          <button onClick={()=>setActiveNav("Groups")} style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.3)",background:"none",border:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>Full groups view →</button>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:"10px"}}>
-          {GROUPS.map((g,i)=>(
-            <div key={i} className="group-card" onClick={()=>setActiveNav("Groups")}
-              style={{background:"rgba(255,255,255,0.02)",border:"1px solid",borderColor:g.danger?"rgba(255,107,53,0.25)":"rgba(255,255,255,0.07)",borderRadius:"12px",padding:"16px",cursor:"pointer",transition:"all 0.25s"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}}>
-                <div style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",color:"#D4AF37",letterSpacing:"0.05em"}}>Group {g.id}</div>
-                {g.danger&&<div style={{fontSize:"0.55rem",color:"#FF6B35",fontWeight:700,background:"rgba(255,107,53,0.12)",padding:"2px 6px",borderRadius:"4px"}}>🔥</div>}
-              </div>
-              {g.teams.map((t,j)=>(
-                <div key={j} style={{fontSize:"0.78rem",color:j===0?"#EEE9DF":"rgba(255,255,255,0.55)",padding:"3px 0",borderBottom:j<3?"1px solid rgba(255,255,255,0.04)":"none",fontWeight:j===0?600:400}}>{t.flag} {t.name}</div>
+          {/* Prediction */}
+          <div style={{background:"linear-gradient(135deg,rgba(212,175,55,0.08),rgba(255,107,53,0.06))",border:"1px solid rgba(212,175,55,0.2)",borderRadius:"20px",padding:"28px 28px",display:"flex",flexDirection:"column",gap:"18px",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",right:"-20px",top:"-20px",fontSize:"7rem",opacity:0.04,pointerEvents:"none"}}>🏆</div>
+            <div>
+              <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"6px"}}>Fan Predictions — Open Now</div>
+              <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",letterSpacing:"0.04em",marginBottom:"6px"}}>Who Lifts The Trophy?</h2>
+              <p style={{color:"rgba(255,255,255,0.45)",fontSize:"0.82rem",margin:0}}>Pick your champion. Brag rights await.</p>
+            </div>
+            <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+              {FAVORITES.map(f=>(
+                <button key={f.name} className="predict-btn" onClick={()=>setPrediction(f.name)} style={{background:prediction===f.name?"#D4AF37":"rgba(255,255,255,0.05)",color:prediction===f.name?"#060A10":"rgba(255,255,255,0.7)",border:`1px solid ${prediction===f.name?"#D4AF37":"rgba(255,255,255,0.12)"}`,borderRadius:"8px",padding:"8px 12px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:prediction===f.name?700:500,fontSize:"0.78rem",transition:"all 0.2s",display:"flex",alignItems:"center",gap:"5px"}}>
+                  {f.flag} {f.name}
+                </button>
               ))}
             </div>
-          ))}
-        </div>
-      </section>
+            {prediction&&(
+              <div style={{background:"rgba(212,175,55,0.12)",border:"1px solid rgba(212,175,55,0.3)",borderRadius:"8px",padding:"10px 16px",fontSize:"0.82rem",color:"#D4AF37",fontWeight:600,animation:"fadeUp 0.3s ease"}}>
+                Locked: {FAVORITES.find(f=>f.name===prediction)?.flag} {prediction} 🏆
+              </div>
+            )}
+            <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"11px 24px",fontWeight:700,fontSize:"0.85rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif",alignSelf:"flex-start"}}>
+              Submit & See Fan Votes →
+            </button>
+          </div>
 
-      {/* ── DEBATE / KITS ── */}
-      <section style={{padding:"40px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"28px 24px"}}>
-            <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan Debate</div>
-            <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.3rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Debate Rooms</h3>
-            <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,marginBottom:"16px"}}>Is this Messi's last shot? Will Mbappé finally deliver? Drop your take.</p>
-            <button className="join-btn" onClick={()=>setActiveNav("Debate")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"10px 20px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>Enter Debate →</button>
+          {/* Debate */}
+          <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"20px",padding:"28px 24px",display:"flex",flexDirection:"column",justifyContent:"space-between",gap:"16px",minWidth:"220px",maxWidth:"260px"}}>
+            <div>
+              <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"}}>Fan Debate</div>
+              <h3 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.6rem",letterSpacing:"0.04em",marginBottom:"10px"}}>Debate Rooms</h3>
+              <p style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.4)",lineHeight:1.6,margin:0}}>Is this Messi's last shot? Will Mbappé finally deliver? Drop your take.</p>
+            </div>
+            <button className="join-btn" onClick={()=>setActiveNav("Debate")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"8px",padding:"11px 20px",fontWeight:700,fontSize:"0.8rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif",whiteSpace:"nowrap"}}>Enter Debate →</button>
+          </div>
+
         </div>
       </section>
     </>
