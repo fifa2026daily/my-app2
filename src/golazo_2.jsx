@@ -801,15 +801,6 @@ function HomePage({setActiveNav}) {
 
           <Countdown/>
 
-          <div className="hero-btns" style={{display:"flex",gap:"10px",flexWrap:"wrap",marginTop:"28px"}}>
-            <button className="join-btn" onClick={()=>setActiveNav("Predictions")} style={{background:"#D4AF37",color:"#060A10",border:"none",borderRadius:"10px",padding:"13px 24px",fontWeight:700,fontSize:"0.88rem",cursor:"pointer",transition:"all 0.2s",fontFamily:"'DM Sans',sans-serif"}}>
-              Lock In Your Prediction
-            </button>
-            <button onClick={()=>setActiveNav("Groups")} style={{background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.65)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",padding:"13px 24px",fontWeight:500,fontSize:"0.88rem",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
-              📋 View All Groups
-            </button>
-          </div>
-
           {/* Mobile trophy */}
           <div className="mobile-trophy-show" style={{display:"none",textAlign:"center",margin:"16px 0 4px"}}>
             <img src="/fifa_trophy.png" alt="FIFA Trophy" style={{width:"120px",filter:"drop-shadow(0 0 30px rgba(212,175,55,0.5))",animation:"float-trophy 4s ease-in-out infinite"}} onError={e=>e.target.style.display="none"}/>
@@ -967,7 +958,7 @@ function HomePage({setActiveNav}) {
       <section style={{padding:"60px 28px 0",maxWidth:"1200px",margin:"0 auto"}}>
         <div style={{marginBottom:"24px"}}>
           <div style={{fontSize:"0.65rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"5px"}}>The names you're watching</div>
-          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em"}}>Player Watch</h2>
+          <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"2.2rem",letterSpacing:"0.04em",color:"#EEE9DF"}}>Player Watch</h2>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:"12px"}}>
           {PLAYERS.map((p,i)=>(
@@ -1030,16 +1021,16 @@ function HomePage({setActiveNav}) {
         </div>
       </section>
 
-      {/* ── PREDICTION CTA + DEBATE — side by side ── */}
+      {/* ── PREDICTION CTA + DEBATE — side by side on desktop, stacked on mobile ── */}
       <section style={{padding:"52px 28px 0",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"12px",alignItems:"stretch"}}>
+        <div className="pred-debate-grid" style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"12px",alignItems:"stretch"}}>
 
           {/* Prediction */}
           <div style={{background:"linear-gradient(135deg,rgba(212,175,55,0.08),rgba(255,107,53,0.06))",border:"1px solid rgba(212,175,55,0.2)",borderRadius:"20px",padding:"28px 28px",display:"flex",flexDirection:"column",gap:"18px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",right:"-20px",top:"-20px",fontSize:"7rem",opacity:0.04,pointerEvents:"none"}}>🏆</div>
             <div>
               <div style={{fontSize:"0.6rem",color:"#D4AF37",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"6px"}}>Fan Predictions — Open Now</div>
-              <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",letterSpacing:"0.04em",marginBottom:"6px"}}>Who Lifts The Trophy?</h2>
+              <h2 style={{fontFamily:"'Bebas Neue',cursive",fontSize:"1.8rem",letterSpacing:"0.04em",marginBottom:"6px",color:"#EEE9DF"}}>Who Lifts The Trophy?</h2>
               <p style={{color:"rgba(255,255,255,0.45)",fontSize:"0.82rem",margin:0}}>Pick your champion. Brag rights await.</p>
             </div>
             <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
@@ -3703,6 +3694,8 @@ export default function Golazo() {
           .buzz-layout{grid-template-columns:1fr!important;}
           .next-match-teams{grid-template-columns:1fr!important;text-align:center;}
           .next-match-teams>div:last-child{flex-direction:row-reverse!important;}
+          .pred-debate-grid{grid-template-columns:1fr!important;}
+          .pred-debate-grid>div:last-child{min-width:unset!important;max-width:unset!important;}
         }
 
       `}</style>
